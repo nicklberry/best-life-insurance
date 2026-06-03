@@ -1,0 +1,10 @@
+---
+interface Props { title: string; description: string; href: string; items?: string[]; }
+const { title, description, href, items = [] } = Astro.props;
+---
+<article class="coverage-card">
+  <div class="icon">⚙️</div><h3><a href={href}>{title}</a></h3><p>{description}</p>
+  {items.length > 0 && <ul>{items.slice(0,3).map((item) => <li>{item}</li>)}</ul>}
+  <a class="read-more" href={href}>Read the coverage guide →</a>
+</article>
+<style>.coverage-card{background:white;border:1px solid rgba(31,41,55,.1);border-radius:26px;padding:24px;box-shadow:var(--shadow-card)}.icon{width:48px;height:48px;display:grid;place-items:center;background:var(--color-soft-cream);border-radius:16px;margin-bottom:12px}.coverage-card p{color:var(--color-gray-700)}ul{padding-left:18px;color:var(--color-gray-600)}.read-more{font-weight:900;color:var(--color-orange)}</style>

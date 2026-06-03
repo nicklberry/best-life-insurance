@@ -1,0 +1,20 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import CTASection from '../components/CTASection.astro';
+import Disclaimer from '../components/Disclaimer.astro';
+const { title, description, seoTitle = title, seoDescription = description, keywords, eyebrow = 'Guide' } = Astro.props;
+---
+<BaseLayout title={seoTitle} description={seoDescription} keywords={keywords}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      <p class="lead">{description}</p>
+      <Disclaimer />
+    </div>
+  </section>
+  <section class="section">
+    <article class="content-body"><slot /></article>
+  </section>
+  <CTASection />
+</BaseLayout>

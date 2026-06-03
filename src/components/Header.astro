@@ -1,0 +1,18 @@
+---
+const links = [
+  ['Home warranty', '/home-warranty/'], ['Compare', '/compare/'], ['Coverage', '/coverage/'], ['Blog', '/blog/'], ['Glossary', '/glossary/']
+];
+---
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a class="brand" href="/" aria-label="Best Home Warranty Near Me home"><span class="brand-mark">🏠</span><span>Best Home Warranty<br/>Near Me</span></a>
+    <nav aria-label="Primary navigation">
+      {links.map(([label, href]) => <a href={href}>{label}</a>)}
+    </nav>
+    <a class="nav-cta" href="/compare/">Check options</a>
+  </div>
+</header>
+<style>
+.site-header{position:sticky;top:0;z-index:20;background:rgba(255,249,240,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(31,41,55,.08)}
+.nav-wrap{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 0}.brand{display:flex;align-items:center;gap:10px;font-weight:950;color:var(--color-navy);line-height:1}.brand-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:var(--color-orange)}nav{display:flex;gap:18px;color:var(--color-gray-700);font-weight:800;font-size:.95rem}.nav-cta{background:var(--color-navy);color:white;border-radius:999px;padding:10px 14px;font-weight:900}.nav-cta:hover{color:white;background:var(--color-orange)}@media(max-width:860px){nav{display:none}.brand{font-size:.92rem}.nav-cta{font-size:.9rem}}
+</style>

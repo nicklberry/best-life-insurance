@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { territories, TERRITORY_TYPE_LABELS, TERRITORY_STATUS_LABELS, formatCurrency, formatNumber } from '../../data/territories';
+import type { TerritoryStatus } from '../../data/territories';
+
+const states = ['Iowa', 'Illinois'];
+
+const statusColors: Record<TerritoryStatus, string> = {
+  available: 'badge-available',
+  reserved: 'badge-reserved',
+  licensed: 'badge-licensed',
+  internal: 'badge-internal',
+};
+
+function countByStatus(stateTerrits: typeof territories) {
+  return {
+    available: stateTerrits.filter((t) => t.status === 'available').length,
+    reserved: stateTerrits.filter((t) => t.status === 'reserved').length,
+    licensed: stateTerrits.filter((t) => t.status === 'licensed').length,
+    internal: stateTerrits.filter((t) => t.status === 'internal').length,
+  };
+}
+---
+
+<BaseLayout
+  title="Territory Map — Exclusive Homeowner Territories | Best Home Warranty Near Me"
+  description="View available exclusive homeowner acquisition territories across Iowa and Illinois. Browse markets by state and territory type."
+  keywords="insurance territory map, homeowner territory Illinois Iowa, exclusive insurance territory availability"
+>
+  <style>
+    .map-hero {
+      padding: 72px 0 48px;
+      background: radial-gradient(circle at top right, #FFE4C7, transparent 38%), var(--color-cream);
+    }
+    .state-section { padding: 48px 0; }
+    .state-section + .state-section { border-top: 1px solid var(--color-gray-100); }
+    .state-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
+    .state-name { font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--color-navy); font-weight: 900; letter-spacing: -.04em; margin: 0; }
+    .status-summary { display: flex; gap: 10px; flex-wrap: wrap; }
+    .status-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; font-size: .78rem; font-weight: 800; }
+    .chip-available { background: #DCFCE7; color: #15803D; }
+    .chip-reserved { background: #FEF9C3; color: #A16207; }
+    .chip-licensed { background: #FEE2E2; color: #B91C1C; }
+    .chip-internal { background: #F3F4F6; color: #6B7280; }
+
+    .badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 11px; font-size: .73rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .badge-available { background: #DCFCE7; color: #15803D; }
+    .badge-reserved { background: #FEF9C3; color: #A16207; }
+    .badge-licensed { background: #FEE2E2; color: #B91C1C; }
+    .badge-internal { background: #F3F4F6; color: #6B7280; }
+
+    .map-placeholder {
+      background: var(--color-white);
+      border: 2px dashed var(--color-gray-100);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      text-align: center;
+      margin-bottom: 36px;
+      color: var(--color-gray-600);
+    }
+    .map-placeholder p { margin: 0; font-size: .92rem; }
+
+    .state-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .t-card {
+      background: var(--color-white);
+      border: 1px solid rgba(31,41,55,.08);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+      display: flex; flex-direction: column; gap: 0;
+      transition: box-shadow .15s;
+    }
+    .t-card:hover { box-shadow: 0 22px 56px rgba(16,32,51,.14); }
+    .t-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .t-card h3 { font-size: 1.05rem; margin: 0; }
+    .t-type { font-size: .73rem; font-weight: 700; color: var(--color-orange); text-transform: uppercase; letter-spacing: .09em; margin-bottom: 14px; }
+    .t-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .t-stat label { display: block; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--color-gray-600); margin-bottom: 2px; }
+    .t-stat span { font-size: .95rem; font-weight: 800; color: var(--color-navy); }
+    .t-fee { font-size: .82rem; color: var(--color-gray-600); margin-bottom: 16px; }
+    .t-fee strong { color: var(--color-navy); }
+    .t-link {
+      display: block; text-align: center;
+      background: var(--color-navy); color: var(--color-white);
+      border-radius: 12px; padding: 10px 16px;
+      font-weight: 800; font-size: .88rem;
+      margin-top: auto; transition: background .15s;
+    }
+    .t-link:hover { background: var(--color-orange); color: var(--color-white); }
+
+    .cta-strip {
+      background: var(--color-navy);
+      padding: 56px 0;
+      text-align: center;
+      color: var(--color-white);
+    }
+    .cta-strip h2 { color: var(--color-white); margin-bottom: 12px; }
+    .cta-strip p { color: rgba(255,255,255,.75); margin-bottom: 28px; }
+    .cta-strip a {
+      display: inline-block;
+      background: var(--color-orange); color: var(--color-white);
+      border-radius: 14px; padding: 15px 32px;
+      font-weight: 900; font-size: 1rem;
+    }
+    .cta-strip a:hover { background: #EA6C0A; color: var(--color-white); }
+
+    @media (max-width: 900px) { .state-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 580px) { .state-grid { grid-template-columns: 1fr; } }
+  </style>
+
+  <section class="map-hero">
+    <div class="container">
+      <p class="eyebrow">Territory Map</p>
+      <h1>Homeowner Territory<br>Coverage Map</h1>
+      <p class="lead" style="max-width:600px;">Browse exclusive homeowner acquisition territories across Iowa and Illinois. See what's available, reserved, and licensed in each market.</p>
+    </div>
+  </section>
+
+  {states.map((state) => {
+    const stateTerrits = territories.filter((t) => t.state === state);
+    const counts = countByStatus(stateTerrits);
+    return (
+      <section class="state-section">
+        <div class="container">
+          <div class="state-header">
+            <h2 class="state-name">{state}</h2>
+            <div class="status-summary">
+              {counts.available > 0 && <span class="status-chip chip-available">{counts.available} Available</span>}
+              {counts.reserved > 0 && <span class="status-chip chip-reserved">{counts.reserved} Reserved</span>}
+              {counts.licensed > 0 && <span class="status-chip chip-licensed">{counts.licensed} Licensed</span>}
+              {counts.internal > 0 && <span class="status-chip chip-internal">{counts.internal} Managed Internally</span>}
+            </div>
+          </div>
+
+          <div class="map-placeholder">
+            <p>Interactive map visualization coming soon.</p>
+          </div>
+
+          <div class="state-grid">
+            {stateTerrits.map((t) => (
+              <article class="t-card">
+                <div class="t-card-top">
+                  <h3>{t.territory_name}</h3>
+                  <span class={`badge ${statusColors[t.status]}`}>{TERRITORY_STATUS_LABELS[t.status]}</span>
+                </div>
+                <p class="t-type">{TERRITORY_TYPE_LABELS[t.territory_type]}</p>
+                <div class="t-stats">
+                  <div class="t-stat">
+                    <label>Population</label>
+                    <span>{formatNumber(t.population)}</span>
+                  </div>
+                  <div class="t-stat">
+                    <label>Households</label>
+                    <span>{formatNumber(t.households)}</span>
+                  </div>
+                </div>
+                <p class="t-fee">License: <strong>{formatCurrency(t.annual_license_fee)}/yr</strong></p>
+                <a href={`/territories/${t.territory_slug}/`} class="t-link" data-slug={t.territory_slug} data-territory-name={t.territory_name} data-territory-type={t.territory_type}>
+                  View Territory
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  })}
+
+  <section class="cta-strip">
+    <div class="container">
+      <h2>Ready to Secure Your Market?</h2>
+      <p>Browse all available territories and lock in exclusive homeowner acquisition rights.</p>
+      <a href="/territories/">View All Territories</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { pushDataLayerEvent } from '../../lib/dataLayer';
+
+  pushDataLayerEvent('territory_map_view', { page_path: '/territories/map/' });
+
+  document.querySelectorAll<HTMLAnchorElement>('.t-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      pushDataLayerEvent('territory_card_click', {
+        territory_slug: link.dataset.slug,
+        territory_name: link.dataset.territoryName,
+        territory_type: link.dataset.territoryType,
+      });
+    });
+  });
+</script>

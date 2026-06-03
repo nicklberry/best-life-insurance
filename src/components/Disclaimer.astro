@@ -1,0 +1,8 @@
+---
+const { insurance = false } = Astro.props;
+---
+<p class="disclaimer">
+  Home warranty coverage varies by provider, plan, location, and contract terms. Best Home Warranty Near Me may receive compensation when users request quotes or purchase coverage through partner links.
+  {insurance && ' If you choose to connect your insurance information, your information may be shared with participating licensed insurance agencies in your area.'}
+</p>
+<style>.disclaimer{margin:16px 0 0;color:var(--color-gray-600);font-size:.9rem;}</style>

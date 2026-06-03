@@ -1,0 +1,32 @@
+---
+const { label = 'Search', placeholder = 'Search guides...', target = '[data-search]' } = Astro.props;
+const id = `search-${Math.random().toString(36).slice(2)}`;
+---
+<div class="search-panel" data-search-root data-target={target}>
+  <label for={id}>{label}</label>
+  <input id={id} type="search" placeholder={placeholder} aria-describedby={`${id}-count`} />
+  <div class="search-meta"><span id={`${id}-count`} data-count></span><span>No reloads. No nonsense.</span></div>
+  <p class="empty-state" data-empty hidden>No matching results. Your search is either too specific or your dishwasher is inventing new problems.</p>
+</div>
+<script>
+  document.querySelectorAll('[data-search-root]').forEach((root) => {
+    const input = root.querySelector('input');
+    const count = root.querySelector('[data-count]');
+    const empty = root.querySelector('[data-empty]');
+    const targetSelector = root.getAttribute('data-target') || '[data-search]';
+    const items = Array.from(document.querySelectorAll(targetSelector));
+    const update = () => {
+      const query = input.value.trim().toLowerCase();
+      let visible = 0;
+      items.forEach((item) => {
+        const matches = !query || (item.getAttribute('data-search') || '').includes(query);
+        item.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      count.textContent = `${visible} visible result${visible === 1 ? '' : 's'}`;
+      empty.hidden = visible !== 0;
+    };
+    input.addEventListener('input', update);
+    update();
+  });
+</script>

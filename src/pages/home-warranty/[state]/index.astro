@@ -1,0 +1,37 @@
+---
+import { locations } from '../../../data/locations';
+import type { LocalCity } from '../../../data/locations';
+import LocalLandingPage from '../../../components/LocalLandingPage.astro';
+
+export function getStaticPaths() {
+  return locations.map((stateLocation) => ({
+    params: { state: stateLocation.slug },
+    props: {
+      stateSlug: stateLocation.slug,
+      stateName: stateLocation.name,
+      stateAbbreviation: stateLocation.abbreviation,
+      isActiveMarket: stateLocation.isActiveMarket,
+      cities: stateLocation.cities,
+    },
+  }));
+}
+
+interface Props {
+  stateSlug: string;
+  stateName: string;
+  stateAbbreviation: string;
+  isActiveMarket: boolean;
+  cities: LocalCity[];
+}
+
+const { stateSlug, stateName, stateAbbreviation, isActiveMarket, cities } = Astro.props;
+---
+
+<LocalLandingPage
+  stateSlug={stateSlug}
+  stateName={stateName}
+  stateAbbreviation={stateAbbreviation}
+  isCityPage={false}
+  isActiveMarket={isActiveMarket}
+  cities={cities}
+/>

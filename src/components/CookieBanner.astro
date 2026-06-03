@@ -1,0 +1,65 @@
+---
+---
+<div id="cookie-banner" role="region" aria-label="Cookie notice" hidden>
+  <p>
+    We use cookies to improve your experience and analyze site traffic.
+    By continuing to use this site you agree to our use of cookies.
+    <a href="/privacy-policy">Learn more</a>
+  </p>
+  <button id="cookie-accept" type="button">Got it</button>
+</div>
+
+<style>
+  #cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: var(--color-navy);
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: .92rem;
+    box-shadow: 0 -2px 12px rgba(0,0,0,.18);
+  }
+  #cookie-banner[hidden] { display: none; }
+  #cookie-banner p {
+    margin: 0;
+    color: #fff;
+  }
+  #cookie-banner a {
+    color: var(--color-orange);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+  #cookie-accept {
+    background: var(--color-orange);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 8px 22px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  #cookie-accept:hover { opacity: .88; }
+</style>
+
+<script>
+  const STORAGE_KEY = 'cookie_consent';
+  const banner = document.getElementById('cookie-banner');
+  if (banner && !localStorage.getItem(STORAGE_KEY)) {
+    banner.hidden = false;
+  }
+  document.getElementById('cookie-accept')?.addEventListener('click', () => {
+    localStorage.setItem(STORAGE_KEY, '1');
+    if (banner) banner.hidden = true;
+  });
+</script>

@@ -1,0 +1,8 @@
+---
+import { getContentPath } from '../lib/contentPaths';
+const { post } = Astro.props;
+---
+<article class="card post-card" data-search={JSON.stringify([post.data.title, post.data.description, post.data.category, ...(post.data.tags || [])].join(' ').toLowerCase())}>
+  <p class="eyebrow">{post.data.category}</p><h3><a href={getContentPath('blog', post)}>{post.data.title}</a></h3><p>{post.data.description}</p><div class="tags">{post.data.tags.map((tag: string) => <span>{tag}</span>)}</div>
+</article>
+<style>.post-card{box-shadow:none}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.tags span{background:var(--color-gray-100);border-radius:999px;padding:5px 10px;font-weight:800;font-size:.82rem;color:var(--color-gray-700)}</style>

@@ -1,0 +1,416 @@
+---
+const { compact = false } = Astro.props;
+const id = `lead-gate-${Math.random().toString(36).slice(2)}`;
+---
+<section class={`lead-gate ${compact ? 'lead-gate-compact' : ''}`} data-lead-capture-gate>
+  <div class="zip-card">
+    <p class="eyebrow">Check availability</p>
+    <h2>Start with your ZIP code.</h2>
+    <p class="lead-gate-intro">We’re focused on Iowa and Illinois right now. Everyone else can still raise a hand for later.</p>
+
+    <form class="zip-form" data-zip-form novalidate>
+      <div class="field zip-field">
+        <label for={`${id}-zip-check`}>Enter your ZIP code to check availability</label>
+        <div class="zip-row">
+          <input id={`${id}-zip-check`} name="zipCheck" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" placeholder="ZIP code" aria-describedby={`${id}-zip-check-message`} data-zip-input />
+          <button type="submit" data-event="zip_check_submit">Check Availability</button>
+        </div>
+      </div>
+    </form>
+
+    <div id={`${id}-zip-check-message`} class="status-message" aria-live="polite" data-zip-message></div>
+    <p class="supporting-copy" data-supporting-copy hidden>We’re currently helping homeowners in Iowa and Illinois. Leave your information below and we’ll let you know when we expand.</p>
+  </div>
+
+  <form class="lead-form" data-lead-form hidden novalidate data-event="lead_form_view">
+    <input type="hidden" name="eligibilityStatus" data-eligibility-status-field />
+    <input type="hidden" name="eligibleState" data-eligible-state-field />
+    <input type="hidden" name="leadType" data-lead-type-field />
+
+    <div class="form-heading">
+      <p class="eyebrow" data-form-eyebrow>Coverage check</p>
+      <h2 data-form-title>Where should we send your coverage options?</h2>
+      <p data-form-copy>Tell us where to reach you and we’ll help you compare home warranty options available in your area.</p>
+    </div>
+
+    <div class="form-grid two-col">
+      <div class="field">
+        <label for={`${id}-first-name`}>First Name</label>
+        <input id={`${id}-first-name`} name="firstName" type="text" autocomplete="given-name" required />
+        <p class="field-error" data-error-for="firstName"></p>
+      </div>
+      <div class="field">
+        <label for={`${id}-last-name`}>Last Name</label>
+        <input id={`${id}-last-name`} name="lastName" type="text" autocomplete="family-name" required />
+        <p class="field-error" data-error-for="lastName"></p>
+      </div>
+    </div>
+
+    <div class="form-grid two-col">
+      <div class="field">
+        <label for={`${id}-email`}>Email</label>
+        <input id={`${id}-email`} name="email" type="email" autocomplete="email" required />
+        <p class="field-error" data-error-for="email"></p>
+      </div>
+      <div class="field">
+        <label for={`${id}-phone`}>Phone Number</label>
+        <input id={`${id}-phone`} name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+        <p class="field-error" data-error-for="phone"></p>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for={`${id}-address`}>Street Address</label>
+      <input id={`${id}-address`} name="address" type="text" autocomplete="street-address" required />
+      <p class="field-error" data-error-for="address"></p>
+    </div>
+
+    <div class="form-grid three-col">
+      <div class="field">
+        <label for={`${id}-city`}>City</label>
+        <input id={`${id}-city`} name="city" type="text" autocomplete="address-level2" required />
+        <p class="field-error" data-error-for="city"></p>
+      </div>
+      <div class="field">
+        <label for={`${id}-state`}>State</label>
+        <input id={`${id}-state`} name="state" type="text" autocomplete="address-level1" required data-state-input />
+        <p class="field-error" data-error-for="state"></p>
+      </div>
+      <div class="field">
+        <label for={`${id}-lead-zip`}>ZIP Code</label>
+        <input id={`${id}-lead-zip`} name="zip" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" required data-lead-zip-input />
+        <p class="field-error" data-error-for="zip"></p>
+      </div>
+    </div>
+
+    <div class="consent-card">
+      <label class="consent-check" for={`${id}-tcpa-consent`}>
+        <input id={`${id}-tcpa-consent`} name="tcpaConsent" type="checkbox" value="yes" required data-tcpa-consent />
+        <span data-consent-copy>By checking this box and continuing, you provide your prior express written consent for Best Home Warranty Near Me and participating home warranty providers, licensed insurance agencies, and service partners to contact you at the phone number you provided about home warranty options, including by calls, texts, prerecorded or artificial voice messages, AI-assisted calling, and automated dialing systems. Consent is not a condition of purchase. Message and data rates may apply. You can revoke consent at any time.</span>
+      </label>
+      <p class="field-error" data-error-for="tcpaConsent"></p>
+      <p class="consent-links">Please review our <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a> and <a href="/terms/" target="_blank" rel="noopener">Terms of Use</a>.</p>
+    </div>
+
+    <button class="lead-submit" type="submit" data-event="lead_form_submit">Continue</button>
+  </form>
+
+  <div class="success-card" data-success-card hidden aria-live="polite" data-event="lead_form_success">
+    <h2 data-success-title>You’re in. Next step: compare your coverage options.</h2>
+    <p data-success-copy></p>
+    <a class="success-link" href="/compare/" data-success-link>Continue to Coverage Options</a>
+  </div>
+</section>
+
+<script>
+  import { submitLead } from '../lib/leadSubmission';
+  import { getZipEligibility } from '../lib/zipEligibility';
+  import { pushDataLayerEvent } from '../lib/dataLayer';
+  import { captureAttribution } from '../lib/attribution';
+
+  const stateNames = {
+    IA: 'Iowa',
+    IL: 'Illinois'
+  };
+
+  function getPageAttribution() {
+    const params = new URLSearchParams(window.location.search);
+
+    return {
+      website: 'besthomewarrantynearme.com',
+      pageUrl: window.location.href,
+      pagePath: window.location.pathname,
+      pageTitle: document.title,
+      referrer: document.referrer,
+      utmSource: params.get('utm_source') || '',
+      utmMedium: params.get('utm_medium') || '',
+      utmCampaign: params.get('utm_campaign') || '',
+      utmTerm: params.get('utm_term') || '',
+      utmContent: params.get('utm_content') || '',
+      userAgent: navigator.userAgent
+    };
+  }
+
+  function buildConnectInsuranceUrl(payload) {
+    const params = new URLSearchParams();
+    const currentParams = new URLSearchParams(window.location.search);
+    const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+
+    params.set('leadType', String(payload.leadType));
+    params.set('eligibleState', String(payload.eligibleState));
+
+    utmKeys.forEach((key) => {
+      const value = currentParams.get(key);
+
+      if (value) {
+        params.set(key, value);
+      }
+    });
+
+    return `/connect-insurance/?${params.toString()}`;
+  }
+
+  function setFieldError(form, name, message) {
+    const error = form.querySelector(`[data-error-for="${name}"]`);
+    const field = form.elements.namedItem(name);
+
+    if (error) {
+      error.textContent = message;
+    }
+
+    if (field instanceof HTMLElement) {
+      field.setAttribute('aria-invalid', message ? 'true' : 'false');
+    }
+  }
+
+  function validateLeadForm(form) {
+    const data = new FormData(form);
+    const values = Object.fromEntries(data.entries());
+    const errors = {};
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'state', 'zip'];
+
+    requiredFields.forEach((field) => {
+      if (!String(values[field] || '').trim()) {
+        errors[field] = 'This field is required.';
+      }
+    });
+
+    if (values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(values.email))) {
+      errors.email = 'Must be valid email format.';
+    }
+
+    if (values.phone && String(values.phone).replace(/\D/g, '').length < 10) {
+      errors.phone = 'Must contain at least 10 digits.';
+    }
+
+    if (values.zip && !/^\d{5}$/.test(String(values.zip))) {
+      errors.zip = 'Must be 5 digits.';
+    }
+
+    if (values.tcpaConsent !== 'yes') {
+      errors.tcpaConsent = 'Please check the consent box so we can contact you about this request.';
+    }
+
+    requiredFields.forEach((field) => setFieldError(form, field, errors[field] || ''));
+    setFieldError(form, 'tcpaConsent', errors.tcpaConsent || '');
+
+    return {
+      isValid: Object.keys(errors).length === 0,
+      values
+    };
+  }
+
+  function initLeadGate(gate) {
+    const zipForm = gate.querySelector('[data-zip-form]');
+    const zipInput = gate.querySelector('[data-zip-input]');
+    const message = gate.querySelector('[data-zip-message]');
+    const supportingCopy = gate.querySelector('[data-supporting-copy]');
+    const leadForm = gate.querySelector('[data-lead-form]');
+    const stateInput = gate.querySelector('[data-state-input]');
+    const leadZipInput = gate.querySelector('[data-lead-zip-input]');
+    const eligibilityStatusField = gate.querySelector('[data-eligibility-status-field]');
+    const eligibleStateField = gate.querySelector('[data-eligible-state-field]');
+    const leadTypeField = gate.querySelector('[data-lead-type-field]');
+    const formTitle = gate.querySelector('[data-form-title]');
+    const formCopy = gate.querySelector('[data-form-copy]');
+    const formEyebrow = gate.querySelector('[data-form-eyebrow]');
+    const consentCopy = gate.querySelector('[data-consent-copy]');
+    const tcpaConsent = gate.querySelector('[data-tcpa-consent]');
+    const leadSubmit = gate.querySelector('.lead-submit');
+    const successCard = gate.querySelector('[data-success-card]');
+    const successTitle = gate.querySelector('[data-success-title]');
+    const successCopy = gate.querySelector('[data-success-copy]');
+    const successLink = gate.querySelector('[data-success-link]');
+
+    let currentEligibility = null;
+
+    zipForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const zip = zipInput.value.trim();
+      const result = getZipEligibility(zip);
+      currentEligibility = result;
+
+      const attr = captureAttribution();
+      const basePayload = {
+        zip,
+        page_path: attr.current_page_path,
+        page_title: attr.current_page_title,
+        ...attr,
+      };
+
+      pushDataLayerEvent('zip_check_submit', basePayload);
+
+      message.textContent = result.message;
+      supportingCopy.hidden = true;
+      leadForm.hidden = true;
+      successCard.hidden = true;
+      gate.removeAttribute('data-event');
+      gate.removeAttribute('data-lead-type');
+      gate.removeAttribute('data-eligibility-status');
+
+      if (!result.isValidZip) {
+        zipInput.setAttribute('aria-invalid', 'true');
+        gate.setAttribute('data-event', 'zip_check_invalid');
+        pushDataLayerEvent('zip_check_invalid', { ...basePayload, eligibility_status: 'invalid' });
+        return;
+      }
+
+      zipInput.setAttribute('aria-invalid', 'false');
+      const isEligible = result.isEligible;
+      const eligibilityStatus = isEligible ? 'eligible' : 'ineligible';
+      const leadType = isEligible ? 'coverage_lead' : 'expansion_waitlist';
+      const eligibleState = result.state || '';
+
+      const zipPayload = {
+        ...basePayload,
+        eligibility_status: eligibilityStatus,
+        eligible_state: eligibleState,
+      };
+      pushDataLayerEvent(isEligible ? 'zip_check_eligible' : 'zip_check_ineligible', zipPayload);
+
+      gate.setAttribute('data-event', isEligible ? 'zip_check_eligible' : 'zip_check_ineligible');
+      gate.setAttribute('data-eligibility-status', eligibilityStatus);
+      gate.setAttribute('data-lead-type', leadType);
+      leadForm.setAttribute('data-eligibility-status', eligibilityStatus);
+      leadForm.setAttribute('data-lead-type', leadType);
+      eligibilityStatusField.value = eligibilityStatus;
+      eligibleStateField.value = eligibleState;
+      leadTypeField.value = leadType;
+      leadZipInput.value = zip;
+
+      tcpaConsent.checked = false;
+      setFieldError(leadForm, 'tcpaConsent', '');
+
+      if (isEligible) {
+        formEyebrow.textContent = 'Coverage lead';
+        formTitle.textContent = 'Where should we send your coverage options?';
+        formCopy.textContent = 'Tell us where to reach you and we’ll help you compare home warranty options available in your area.';
+        consentCopy.textContent = 'By checking this box and continuing, you provide your prior express written consent for Best Home Warranty Near Me and participating home warranty providers, licensed insurance agencies, and service partners to contact you at the phone number you provided about home warranty options, including by calls, texts, prerecorded or artificial voice messages, AI-assisted calling, and automated dialing systems. Consent is not a condition of purchase. Message and data rates may apply. You can revoke consent at any time.';
+        tcpaConsent.required = true;
+        leadSubmit.textContent = 'Continue';
+        stateInput.value = stateNames[eligibleState];
+      } else {
+        formEyebrow.textContent = 'Expansion waitlist';
+        formTitle.textContent = 'Want us to let you know when we expand?';
+        formCopy.textContent = 'Leave your info and we’ll email you when we’re ready to help homeowners in your area.';
+        consentCopy.textContent = 'By checking this box and joining the waitlist, you provide your prior express written consent for Best Home Warranty Near Me to contact you by email, phone, or text when we expand to your area. We will not sell your information to local insurance agencies until we are available in your state. Consent is not a condition of purchase, and you can revoke consent at any time.';
+        tcpaConsent.required = true;
+        leadSubmit.textContent = 'Notify Me';
+        supportingCopy.hidden = false;
+        stateInput.value = '';
+      }
+
+      leadForm.hidden = false;
+      pushDataLayerEvent('lead_form_view', {
+        lead_type: leadType,
+        eligibility_status: eligibilityStatus,
+        eligible_state: eligibleState,
+        zip,
+        page_path: attr.current_page_path,
+        page_title: attr.current_page_title,
+        ...attr,
+      });
+    });
+
+    leadForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const validation = validateLeadForm(leadForm);
+
+      if (!validation.isValid) {
+        return;
+      }
+
+      const payload = {
+        timestamp: new Date().toISOString(),
+        firstName: String(validation.values.firstName).trim(),
+        lastName: String(validation.values.lastName).trim(),
+        email: String(validation.values.email).trim(),
+        phone: String(validation.values.phone).trim(),
+        address: String(validation.values.address).trim(),
+        city: String(validation.values.city).trim(),
+        state: String(validation.values.state).trim(),
+        zip: String(validation.values.zip).trim(),
+        tcpaConsent: validation.values.tcpaConsent === 'yes',
+        tcpaConsentText: consentCopy.textContent.trim(),
+        tcpaConsentVersion: '2026-05-29',
+        tcpaConsentTimestamp: new Date().toISOString(),
+        eligibilityStatus: String(validation.values.eligibilityStatus),
+        eligibleState: String(validation.values.eligibleState || ''),
+        leadType: String(validation.values.leadType),
+        ...getPageAttribution()
+      };
+
+      const formAttr = captureAttribution();
+      const leadEventPayload = {
+        lead_type: payload.leadType,
+        eligibility_status: payload.eligibilityStatus,
+        eligible_state: payload.eligibleState,
+        zip: payload.zip,
+        page_path: formAttr.current_page_path,
+        page_title: formAttr.current_page_title,
+        ...formAttr,
+      };
+      pushDataLayerEvent('lead_form_submit', leadEventPayload);
+
+      const response = await submitLead(payload);
+
+      if (!response.ok) {
+        const errorDetail = response.error ? ` (${response.error})` : '';
+        message.textContent = `Something went wrong while sending your info. Please try again.${errorDetail}`;
+        return;
+      }
+
+      if (payload.leadType === 'coverage_lead') {
+        // Store identity for downstream survey attribution
+        sessionStorage.setItem('leadEmail', payload.email);
+        sessionStorage.setItem('leadFirstName', payload.firstName);
+        pushDataLayerEvent('lead_form_success', { ...leadEventPayload });
+        window.location.assign(buildConnectInsuranceUrl(payload));
+        return;
+      }
+
+      leadForm.hidden = true;
+      successCard.hidden = false;
+      gate.setAttribute('data-event', 'lead_form_success');
+      pushDataLayerEvent('lead_form_success', { ...leadEventPayload });
+      successTitle.textContent = 'You’re on the list.';
+      successCopy.textContent = 'We’ll let you know when we’re ready to help homeowners in your area.';
+      successLink.textContent = 'Back to Home';
+      successLink.href = '/';
+    });
+  }
+
+  document.querySelectorAll('[data-lead-capture-gate]').forEach(initLeadGate);
+</script>
+
+<style>
+  .lead-gate { display: grid; gap: 18px; }
+  .zip-card, .lead-form, .success-card { background: var(--color-white); border: 1px solid rgba(31, 41, 55, .10); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-card); color: var(--color-charcoal); }
+  .zip-card h2, .lead-form h2, .success-card h2 { font-size: clamp(1.45rem, 4vw, 2.2rem); letter-spacing: -.035em; }
+  .lead-gate-intro, .form-heading p, .supporting-copy { color: var(--color-gray-700); }
+  .zip-form, .lead-form { display: grid; gap: 16px; }
+  .field { display: grid; gap: 7px; }
+  label { color: var(--color-navy); font-weight: 900; }
+  input { width: 100%; border: 2px solid var(--color-gray-100); border-radius: 15px; padding: 13px 14px; font: inherit; background: var(--color-white); color: var(--color-charcoal); }
+  input:focus { outline: 3px solid rgba(249, 115, 22, .24); border-color: var(--color-orange); }
+  input[aria-invalid="true"] { border-color: var(--color-red); }
+  .zip-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+  button, .success-link { border: 0; border-radius: 999px; background: var(--color-orange); color: var(--color-white); font-weight: 950; padding: 13px 18px; cursor: pointer; font: inherit; display: inline-flex; align-items: center; justify-content: center; text-align: center; }
+  button:hover, .success-link:hover { color: var(--color-white); filter: brightness(.96); }
+  .status-message { min-height: 26px; font-weight: 900; color: var(--color-navy); }
+  .supporting-copy { margin-top: -6px; }
+  .form-grid { display: grid; gap: 14px; }
+  .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .three-col { grid-template-columns: 1.2fr .9fr .8fr; }
+  .field-error { min-height: 18px; margin: 0; color: var(--color-red); font-size: .88rem; font-weight: 800; }
+  .consent-card { color: var(--color-gray-600); font-size: .9rem; background: var(--color-soft-cream); border-radius: 16px; padding: 14px; margin: 0; }
+  .consent-check { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; color: var(--color-gray-700); font-weight: 700; line-height: 1.45; }
+  .consent-check input { width: auto; margin-top: 4px; accent-color: var(--color-orange); }
+  .consent-links { margin: 8px 0 0; font-size: .86rem; }
+  .consent-links a { color: var(--color-orange); font-weight: 900; }
+  .success-card { text-align: center; }
+  .success-link { margin-top: 8px; }
+  .lead-gate-compact .zip-card, .lead-gate-compact .lead-form, .lead-gate-compact .success-card { box-shadow: none; }
+  [hidden] { display: none !important; }
+  @media (max-width: 720px) { .zip-row, .two-col, .three-col { grid-template-columns: 1fr; } button, .success-link { width: 100%; } }
+</style>

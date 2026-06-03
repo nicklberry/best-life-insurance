@@ -1,0 +1,25 @@
+---
+import Button from './Button.astro';
+import Disclaimer from './Disclaimer.astro';
+import LeadCaptureGate from './LeadCaptureGate.astro';
+const { title = 'Your house breaks. We help you not go broke.', subtitle = 'Compare home warranty options before your AC, water heater, or dishwasher decides to become your most expensive family member.' } = Astro.props;
+---
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">Consumer guide for expensive house drama</p>
+      <h1>{title}</h1>
+      <p class="lead">{subtitle}</p>
+      <div class="hero-actions"><Button href="/compare/">Check Coverage Options</Button><Button href="/coverage/" variant="secondary">See What Home Warranties Cover</Button></div>
+      <Disclaimer />
+    </div>
+    <div class="hero-card" aria-label="Home repair cost examples">
+      <div class="receipt"><span>AC making that noise</span><strong>$1,200?</strong></div>
+      <div class="receipt"><span>Water heater chaos</span><strong>$900?</strong></div>
+      <div class="receipt"><span>Dishwasher rebellion</span><strong>$450?</strong></div>
+      <p>Home warranties can help with covered repairs. They can also disappoint you if you skip the contract. Let’s not do that.</p>
+      <LeadCaptureGate compact />
+    </div>
+  </div>
+</section>
+<style>.hero{padding:74px 0;background:radial-gradient(circle at 80% 10%,#FFE0BE,transparent 34%),linear-gradient(180deg,var(--color-cream),var(--color-soft-cream))}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:34px;align-items:center}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 0}.hero-card{background:var(--color-navy);color:white;border-radius:34px;padding:28px;box-shadow:0 30px 70px rgba(16,32,51,.25);transform:rotate(1deg)}.receipt{display:flex;justify-content:space-between;gap:16px;background:white;color:var(--color-navy);border-radius:18px;padding:16px;margin-bottom:14px}.receipt strong{font-size:1.5rem;color:var(--color-orange)}.hero-card p{color:#DDE7F1;margin-top:18px}@media(max-width:880px){.hero-grid{grid-template-columns:1fr}.hero-card{transform:none}}</style>

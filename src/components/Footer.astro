@@ -1,0 +1,18 @@
+---
+import Disclaimer from './Disclaimer.astro';
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand" href="/"><span>🏠</span> Best Home Warranty Near Me</a>
+      <p>Your house breaks. We help you not go broke. Plain-English guides for homeowners who would rather not learn contract exclusions during a plumbing emergency.</p>
+      <Disclaimer insurance />
+    </div>
+    <div><h3>Explore</h3><a href="/coverage/">Coverage guides</a><a href="/compare/">Compare options</a><a href="/blog/">Blog</a><a href="/glossary/">Glossary</a></div>
+    <div><h3>Company</h3><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+  </div>
+  <div class="container fine-print">© {new Date().getFullYear()} Best Home Warranty Near Me. Editorial information, not legal, financial, or insurance advice.</div>
+</footer>
+<style>
+.site-footer{background:var(--color-navy);color:#D8E0EA;padding:56px 0 24px}.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px}.brand{display:inline-flex;align-items:center;gap:8px;color:white;font-weight:950;margin-bottom:14px}.site-footer h3{color:white;font-size:1.1rem;letter-spacing:0}.site-footer a{display:block;color:#EEF4FA;margin:8px 0}.site-footer a:hover{color:#FDBA74}.fine-print{margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14);font-size:.85rem;color:#B8C5D4}@media(max-width:760px){.footer-grid{grid-template-columns:1fr}}
+</style>

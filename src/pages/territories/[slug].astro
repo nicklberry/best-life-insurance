@@ -1,0 +1,453 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { territories, getTerritoryBySlug, TERRITORY_TYPE_LABELS, TERRITORY_STATUS_LABELS, formatCurrency, formatNumber } from '../../data/territories';
+import type { TerritoryStatus } from '../../data/territories';
+
+export function getStaticPaths() {
+  return territories.map((t) => ({ params: { slug: t.territory_slug } }));
+}
+
+const { slug } = Astro.params;
+const territory = getTerritoryBySlug(slug!);
+if (!territory) return Astro.redirect('/territories/');
+
+const statusColors: Record<TerritoryStatus, string> = {
+  available: 'badge-available',
+  reserved: 'badge-reserved',
+  licensed: 'badge-licensed',
+  internal: 'badge-internal',
+};
+
+const isAvailable = territory.status === 'available' || territory.status === 'reserved';
+---
+
+<BaseLayout
+  title={`${territory.territory_name} Exclusive Homeowner Territory | Best Home Warranty Near Me`}
+  description={`Secure exclusive homeowner acquisition rights for the ${territory.territory_name} territory. ${formatNumber(territory.households)} estimated households. ${formatCurrency(territory.annual_license_fee)}/year license.`}
+  keywords={`${territory.territory_name} insurance territory, exclusive homeowner territory ${territory.state}, homeowner acquisition ${territory.territory_name}`}
+>
+  <style>
+    .t-hero {
+      padding: 72px 0 48px;
+      background: radial-gradient(circle at top right, #FFE4C7, transparent 38%), var(--color-cream);
+    }
+    .t-hero-inner { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
+    .t-hero-badge { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+    .badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 14px; font-size: .76rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
+    .badge-available { background: #DCFCE7; color: #15803D; }
+    .badge-reserved { background: #FEF9C3; color: #A16207; }
+    .badge-licensed { background: #FEE2E2; color: #B91C1C; }
+    .badge-internal { background: #F3F4F6; color: #6B7280; }
+    .badge-type { background: #FFF7ED; color: var(--color-orange); }
+    .t-hero h1 { margin-bottom: 10px; }
+    .t-hero .lead { max-width: 560px; margin-bottom: 28px; }
+
+    /* Summary card */
+    .summary-card {
+      background: var(--color-white);
+      border: 1px solid rgba(31,41,55,.10);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      position: sticky;
+      top: 24px;
+    }
+    .summary-card h3 { font-size: 1.1rem; margin-bottom: 16px; }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--color-gray-100); font-size: .95rem; }
+    .summary-row:last-of-type { border-bottom: none; }
+    .summary-row .label { color: var(--color-gray-600); font-weight: 600; }
+    .summary-row .value { font-weight: 800; color: var(--color-navy); }
+    .price-big { text-align: center; padding: 18px 0 14px; }
+    .price-big .amount { font-size: 2.2rem; font-weight: 900; color: var(--color-navy); line-height: 1; }
+    .price-big .per { font-size: .85rem; color: var(--color-gray-600); margin-top: 4px; }
+    .btn-primary {
+      display: block; width: 100%; text-align: center;
+      background: var(--color-orange); color: var(--color-white);
+      border-radius: 14px; padding: 15px 20px;
+      font-weight: 900; font-size: 1rem; margin-top: 18px;
+      transition: background .15s; border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: #EA6C0A; color: var(--color-white); }
+    .btn-secondary {
+      display: block; width: 100%; text-align: center;
+      background: var(--color-navy); color: var(--color-white);
+      border-radius: 14px; padding: 15px 20px;
+      font-weight: 900; font-size: 1rem; margin-top: 10px;
+      transition: background .15s;
+    }
+    .btn-secondary:hover { background: #1a3050; color: var(--color-white); }
+
+    /* Content sections */
+    .t-sections { padding: 64px 0; }
+    .t-sections-inner { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
+    .t-section { margin-bottom: 52px; }
+    .t-section h2 { font-size: clamp(1.5rem, 3.5vw, 2rem); margin-bottom: 20px; }
+    .counties-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .county-tag { background: var(--color-gray-50); border: 1px solid var(--color-gray-100); border-radius: 10px; padding: 6px 14px; font-size: .88rem; font-weight: 700; color: var(--color-navy); }
+
+    /* Profile preview */
+    .profile-card {
+      background: var(--color-white);
+      border: 1px solid rgba(31,41,55,.10);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+    }
+    .profile-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .profile-field { padding: 12px 14px; background: var(--color-gray-50); border-radius: 10px; }
+    .profile-field label { display: block; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--color-gray-600); margin-bottom: 4px; }
+    .profile-field span { font-size: .95rem; font-weight: 700; color: var(--color-navy); font-family: monospace; }
+    .profile-field.full { grid-column: 1 / -1; }
+
+    /* Non-licensed callout */
+    .non-licensed {
+      background: var(--color-gray-50);
+      border: 1px solid var(--color-gray-100);
+      border-radius: var(--radius-md);
+      padding: 22px 24px;
+      margin-top: 32px;
+    }
+    .non-licensed p { margin: 0; font-size: .92rem; color: var(--color-gray-600); }
+
+    /* Inquiry form */
+    .inquiry-section {
+      background: var(--color-navy);
+      padding: 72px 0;
+      color: var(--color-white);
+    }
+    .inquiry-section h2 { color: var(--color-white); margin-bottom: 10px; }
+    .inquiry-section .lead { color: rgba(255,255,255,.75); margin-bottom: 36px; }
+    .inquiry-form {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      max-width: 640px;
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: .82rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: var(--color-navy); }
+    .form-group input, .form-group textarea, .form-group select {
+      border: 2px solid var(--color-gray-100);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font: inherit;
+      color: var(--color-charcoal);
+      background: var(--color-gray-50);
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: 3px solid rgba(249,115,22,.25);
+      border-color: var(--color-orange);
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-submit {
+      width: 100%; background: var(--color-orange); color: var(--color-white);
+      border: none; border-radius: 14px; padding: 16px;
+      font: inherit; font-weight: 900; font-size: 1rem;
+      cursor: pointer; margin-top: 8px; transition: background .15s;
+    }
+    .form-submit:hover { background: #EA6C0A; }
+    .form-submit:disabled { background: var(--color-gray-100); color: var(--color-gray-600); cursor: default; }
+    .form-success { text-align: center; padding: 40px 24px; }
+    .form-success h3 { color: var(--color-navy); }
+    .form-success p { color: var(--color-gray-600); }
+    .form-error { color: var(--color-red); font-size: .88rem; margin-top: 10px; }
+
+    @media (max-width: 900px) {
+      .t-hero-inner, .t-sections-inner { grid-template-columns: 1fr; }
+      .summary-card { position: static; }
+      .profile-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+  </style>
+
+  <section class="t-hero">
+    <div class="container">
+      <div class="t-hero-inner">
+        <div>
+          <div class="t-hero-badge">
+            <span class={`badge ${statusColors[territory.status]}`}>{TERRITORY_STATUS_LABELS[territory.status]}</span>
+            <span class="badge badge-type">{TERRITORY_TYPE_LABELS[territory.territory_type]}</span>
+            <span class="badge badge-type" style="background:#E0F2FE;color:#0369A1;">{territory.state}</span>
+          </div>
+          <p class="eyebrow">Homeowner Acquisition Territory</p>
+          <h1>Own the {territory.territory_name} Territory</h1>
+          <p class="lead">
+            Exclusive homeowner acquisition rights for the {territory.territory_name} market.
+            {formatNumber(territory.population)} residents. {formatNumber(territory.households)} estimated households.
+          </p>
+          <a href="#inquiry" class="btn-secondary" style="display:inline-block;width:auto;padding:14px 28px;">
+            {isAvailable ? 'Inquire About This Territory' : 'Get Notified'}
+          </a>
+        </div>
+        <div class="summary-card">
+          <div class="price-big">
+            <div class="amount">{formatCurrency(territory.annual_license_fee)}</div>
+            <div class="per">Annual Territory License</div>
+          </div>
+          {[
+            { label: 'Territory Type', value: TERRITORY_TYPE_LABELS[territory.territory_type] },
+            { label: 'Status', value: TERRITORY_STATUS_LABELS[territory.status] },
+            { label: 'Population', value: formatNumber(territory.population) },
+            { label: 'Households', value: formatNumber(territory.households) },
+            { label: 'Lead Cost (Licensed)', value: `${formatCurrency(territory.lead_fee)} / lead` },
+            { label: 'Exclusive', value: territory.exclusive ? 'Yes' : 'No' },
+          ].map(({ label, value }) => (
+            <div class="summary-row">
+              <span class="label">{label}</span>
+              <span class="value">{value}</span>
+            </div>
+          ))}
+          <a href="#inquiry" class="btn-primary">
+            {isAvailable ? 'Inquire About This Territory' : 'Join Waitlist'}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="t-sections">
+    <div class="container">
+      <div class="t-sections-inner">
+        <div>
+          <div class="t-section">
+            <h2>What You're Licensing</h2>
+            <ul class="list-check">
+              <li>Exclusive homeowner acquisition rights for {territory.territory_name}</li>
+              <li>Coverage check submissions generated inside the territory</li>
+              <li>Canopy Connect opportunities from connected homeowners</li>
+              <li>Future homeowner opportunities generated inside the territory</li>
+              <li>Preferred lead pricing at {formatCurrency(territory.lead_fee)} per verified lead</li>
+            </ul>
+          </div>
+
+          <div class="t-section">
+            <h2>Territory Coverage</h2>
+            <p class="muted">This territory encompasses the following counties:</p>
+            <div class="counties-grid">
+              {territory.counties.map((c) => <span class="county-tag">{c} County</span>)}
+            </div>
+          </div>
+
+          <div class="t-section">
+            <h2>Not Just a Lead. A Homeowner Profile.</h2>
+            <p class="muted" style="margin-bottom:20px;">Licensed territory partners receive structured homeowner data — not just a name and phone number.</p>
+            <div class="profile-card">
+              <div class="profile-row">
+                <div class="profile-field">
+                  <label>Name</label>
+                  <span>John & Sarah M.</span>
+                </div>
+                <div class="profile-field">
+                  <label>Phone</label>
+                  <span>(515) 555-••••</span>
+                </div>
+                <div class="profile-field">
+                  <label>Email</label>
+                  <span>j.m••••@gmail.com</span>
+                </div>
+                <div class="profile-field">
+                  <label>Current Carrier</label>
+                  <span>State Farm</span>
+                </div>
+                <div class="profile-field full">
+                  <label>Property Address</label>
+                  <span>4412 Elm St, {territory.territory_name}, {territory.state_abbr}</span>
+                </div>
+                <div class="profile-field">
+                  <label>Coverage Check</label>
+                  <span>Completed ✓</span>
+                </div>
+                <div class="profile-field">
+                  <label>Canopy Connect</label>
+                  <span>Connected ✓</span>
+                </div>
+              </div>
+            </div>
+            <p class="disclosure" style="margin-top:14px;">Available data varies based on homeowner participation and permissions granted through connected systems.</p>
+          </div>
+
+          <div class="non-licensed">
+            <p><strong>Licensed partners</strong> receive exclusive territory protection and preferred lead pricing at {formatCurrency(territory.lead_fee)}/lead.</p>
+            <p style="margin-top:8px;"><strong>Non-licensed buyers</strong> may purchase available opportunities at marketplace pricing ({formatCurrency(175)}/verified lead) with no exclusivity or territory protection.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="position:sticky;top:24px;">
+            <h3 style="font-size:1rem;margin-bottom:16px;">Territory At a Glance</h3>
+            {[
+              { label: 'State', value: territory.state },
+              { label: 'Territory Type', value: TERRITORY_TYPE_LABELS[territory.territory_type] },
+              { label: 'Population', value: formatNumber(territory.population) },
+              { label: 'Households', value: formatNumber(territory.households) },
+              { label: 'Counties', value: territory.counties.length.toString() },
+              { label: 'Status', value: TERRITORY_STATUS_LABELS[territory.status] },
+            ].map(({ label, value }) => (
+              <div class="summary-row" style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-gray-100);font-size:.9rem;">
+                <span style="color:var(--color-gray-600);">{label}</span>
+                <span style="font-weight:800;color:var(--color-navy);">{value}</span>
+              </div>
+            ))}
+            <a href="/territories/" style="display:block;text-align:center;margin-top:18px;font-size:.88rem;color:var(--color-gray-600);font-weight:700;">← View All Territories</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="inquiry-section" id="inquiry">
+    <div class="container">
+      <h2>Inquire About This Territory</h2>
+      <p class="lead">We'll review the market and follow up with availability details.</p>
+
+      <div class="inquiry-form">
+        <div id="inquiry-success" class="form-success" hidden>
+          <h3>Your territory request has been received.</h3>
+          <p>We'll review the market and follow up with availability details.</p>
+        </div>
+
+        <form id="inquiry-form" class="form-grid" novalidate>
+          <input type="hidden" name="submission_type" value="territory_inquiry" />
+          <input type="hidden" name="leadType" value="territory_inquiry" />
+          <input type="hidden" name="territorySlug" value={territory.territory_slug} />
+          <input type="hidden" name="territoryName" value={territory.territory_name} />
+          <input type="hidden" name="territoryType" value={territory.territory_type} />
+          <input type="hidden" name="state" value={territory.state} />
+          <input type="hidden" name="annualLicenseFee" value={territory.annual_license_fee.toString()} />
+          <input type="hidden" name="leadFee" value={territory.lead_fee.toString()} />
+
+          <div class="form-group">
+            <label for="inq-name">Name *</label>
+            <input type="text" id="inq-name" name="name" required autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label for="inq-agency">Agency Name *</label>
+            <input type="text" id="inq-agency" name="agencyName" required autocomplete="organization" />
+          </div>
+          <div class="form-group">
+            <label for="inq-email">Email *</label>
+            <input type="email" id="inq-email" name="email" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="inq-phone">Phone *</label>
+            <input type="tel" id="inq-phone" name="phone" required autocomplete="tel" />
+          </div>
+          <div class="form-group full">
+            <label for="inq-territory">Territory of Interest</label>
+            <input type="text" id="inq-territory" name="territoryInterest" value={territory.territory_name} readonly />
+          </div>
+          <div class="form-group full">
+            <label for="inq-notes">Additional Notes</label>
+            <textarea id="inq-notes" name="notes" placeholder="Tell us about your agency and market goals…"></textarea>
+          </div>
+
+          <div class="form-group full" id="form-error-container" hidden>
+            <p class="form-error" id="form-error-msg"></p>
+          </div>
+
+          <div class="form-group full">
+            <button type="submit" class="form-submit" id="submit-btn">Submit Territory Inquiry</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { pushDataLayerEvent } from '../../lib/dataLayer';
+
+  const territorySlug = document.querySelector<HTMLInputElement>('[name="territorySlug"]')!.value;
+  const territoryName = document.querySelector<HTMLInputElement>('[name="territoryName"]')!.value;
+  const territoryType = document.querySelector<HTMLInputElement>('[name="territoryType"]')!.value;
+
+  pushDataLayerEvent('territory_page_view', {
+    page_path: window.location.pathname,
+    territory_slug: territorySlug,
+    territory_name: territoryName,
+    territory_type: territoryType,
+  });
+
+  document.querySelectorAll('a[href="#inquiry"]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      pushDataLayerEvent('territory_inquiry_start', {
+        territory_slug: territorySlug,
+        territory_name: territoryName,
+        territory_type: territoryType,
+      });
+    });
+  });
+
+  const form = document.getElementById('inquiry-form') as HTMLFormElement;
+  const successEl = document.getElementById('inquiry-success')!;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const errorContainer = document.getElementById('form-error-container')!;
+  const errorMsg = document.getElementById('form-error-msg')!;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+    errorContainer.setAttribute('hidden', '');
+
+    const fd = new FormData(form);
+    const payload: Record<string, string> = {};
+    fd.forEach((val, key) => { payload[key] = String(val); });
+
+    const fullPayload = {
+      submission_type: 'territory_inquiry',
+      leadType: 'territory_inquiry',
+      timestamp: new Date().toISOString(),
+      name: payload.name || '',
+      agencyName: payload.agencyName || '',
+      email: payload.email || '',
+      phone: payload.phone || '',
+      territoryName: payload.territoryName || '',
+      territorySlug: payload.territorySlug || '',
+      territoryType: payload.territoryType || '',
+      state: payload.state || '',
+      annualLicenseFee: payload.annualLicenseFee || '',
+      leadFee: payload.leadFee || '',
+      notes: payload.notes || '',
+      website: 'besthomewarrantynearme.com',
+      pageUrl: window.location.href,
+      pagePath: window.location.pathname,
+      pageTitle: document.title,
+      referrer: document.referrer,
+      utmSource: new URLSearchParams(window.location.search).get('utm_source') || '',
+      utmMedium: new URLSearchParams(window.location.search).get('utm_medium') || '',
+      utmCampaign: new URLSearchParams(window.location.search).get('utm_campaign') || '',
+      utmTerm: new URLSearchParams(window.location.search).get('utm_term') || '',
+      utmContent: new URLSearchParams(window.location.search).get('utm_content') || '',
+      userAgent: navigator.userAgent,
+    };
+
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fullPayload),
+      });
+
+      if (res.ok) {
+        form.hidden = true;
+        successEl.hidden = false;
+        pushDataLayerEvent('territory_inquiry_submit', {
+          event: 'territory_inquiry_submit',
+          submission_type: 'territory_inquiry',
+          territory_slug: payload.territorySlug,
+          territory_name: payload.territoryName,
+          territory_type: payload.territoryType,
+        });
+      } else {
+        throw new Error('Submission failed. Please try again.');
+      }
+    } catch (err) {
+      errorMsg.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      errorContainer.removeAttribute('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Territory Inquiry';
+    }
+  });
+</script>

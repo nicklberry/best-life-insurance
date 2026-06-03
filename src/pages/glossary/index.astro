@@ -1,0 +1,11 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SearchBox from '../../components/SearchBox.astro';
+import GlossaryCard from '../../components/GlossaryCard.astro';
+const entries = (await getCollection('glossary')).sort((a,b) => a.data.term.localeCompare(b.data.term));
+---
+<BaseLayout title="Home Warranty Glossary | Best Home Warranty Near Me" description="Definitions for service call fees, coverage limits, exclusions, waiting periods, home warranties, and homeowners insurance.">
+<section class="page-hero"><div class="container"><p class="eyebrow">Glossary</p><h1>Home warranty terms translated into human.</h1><p class="lead">Because “coverage limit” sounds harmless until it starts paying less than the bill.</p><SearchBox label="Search glossary terms" placeholder="Search by term, definition, or related term..." target=".glossary-card" /></div></section>
+<section class="section"><div class="container grid grid-3">{entries.map((entry) => <GlossaryCard entry={entry} />)}</div></section>
+</BaseLayout>

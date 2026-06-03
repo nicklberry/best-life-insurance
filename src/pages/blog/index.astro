@@ -1,0 +1,11 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SearchBox from '../../components/SearchBox.astro';
+import PostCard from '../../components/PostCard.astro';
+const posts = (await getCollection('blog')).sort((a,b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+<BaseLayout title="Home Warranty Blog | Best Home Warranty Near Me" description="Helpful, funny, plain-English articles about home warranties, coverage, claims, costs, and insurance differences.">
+<section class="page-hero"><div class="container"><p class="eyebrow">Blog</p><h1>Home warranty advice without the sales fog.</h1><p class="lead">Useful guides for homeowners whose appliances are one weird sound away from forming a union.</p><SearchBox label="Search blog articles" placeholder="Search by title, category, or tag..." target=".post-card" /></div></section>
+<section class="section"><div class="container grid grid-3">{posts.map((post) => <PostCard post={post} />)}</div></section>
+</BaseLayout>

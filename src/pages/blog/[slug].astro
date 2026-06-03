@@ -1,0 +1,17 @@
+---
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import { findEntryBySlug } from '../../lib/contentPaths';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('blog');
+
+  return entries.map((entry) => ({
+    params: { slug: entry.id }
+  }));
+}
+const posts = await getCollection('blog');
+const post = findEntryBySlug(posts, Astro.params.slug);
+const { Content } = await render(post);
+---
+<ContentLayout title={post.data.title} description={post.data.description} seoTitle={post.data.seoTitle} seoDescription={post.data.seoDescription} eyebrow={post.data.category}><Content /></ContentLayout>

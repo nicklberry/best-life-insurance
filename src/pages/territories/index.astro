@@ -1,0 +1,251 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { territories, TERRITORY_TYPE_LABELS, TERRITORY_STATUS_LABELS, formatCurrency, formatNumber } from '../../data/territories';
+import type { TerritoryType, TerritoryStatus } from '../../data/territories';
+
+const statusColors: Record<TerritoryStatus, string> = {
+  available: 'badge-available',
+  reserved: 'badge-reserved',
+  licensed: 'badge-licensed',
+  internal: 'badge-internal',
+};
+
+const states = [...new Set(territories.map((t) => t.state))].sort();
+const types: TerritoryType[] = ['community', 'regional', 'metro'];
+const statuses: TerritoryStatus[] = ['available', 'reserved', 'licensed', 'internal'];
+---
+
+<BaseLayout
+  title="Exclusive Homeowner Acquisition Territories | Best Home Warranty Near Me"
+  description="Secure exclusive homeowner acquisition rights in your market. Browse available territories across Iowa and Illinois before another agency does."
+  keywords="exclusive homeowner territory, insurance territory license, homeowner acquisition territory, insurance agency territory"
+>
+  <style>
+    .territory-hero {
+      padding: 72px 0 48px;
+      background: radial-gradient(circle at top right, #FFE4C7, transparent 38%), var(--color-cream);
+    }
+    .filter-bar {
+      background: var(--color-white);
+      border: 1px solid rgba(31,41,55,.10);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-card);
+      margin: 28px 0 36px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: flex-end;
+    }
+    .filter-bar label { display: block; font-weight: 800; font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; color: var(--color-navy); }
+    .filter-bar select, .filter-bar input {
+      border: 2px solid var(--color-gray-100);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font: inherit;
+      font-size: .95rem;
+      background: var(--color-gray-50);
+      color: var(--color-charcoal);
+      min-width: 160px;
+    }
+    .filter-bar select:focus, .filter-bar input:focus {
+      outline: 3px solid rgba(249,115,22,.25);
+      border-color: var(--color-orange);
+    }
+    .filter-group { flex: 1 1 160px; }
+    .search-group { flex: 2 1 260px; }
+    .territory-grid { display: grid; gap: 22px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .t-card {
+      background: var(--color-white);
+      border: 1px solid rgba(31,41,55,.10);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: box-shadow .18s;
+    }
+    .t-card:hover { box-shadow: 0 24px 64px rgba(16,32,51,.16); }
+    .t-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 14px; }
+    .t-card h3 { font-size: 1.2rem; margin: 0; }
+    .t-state { font-size: .82rem; font-weight: 700; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
+    .t-type { font-size: .78rem; font-weight: 700; color: var(--color-orange); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px; }
+    .t-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+    .t-stat label { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--color-gray-600); margin-bottom: 2px; }
+    .t-stat span { font-size: 1.05rem; font-weight: 800; color: var(--color-navy); }
+    .t-pricing { display: flex; gap: 14px; margin-bottom: 20px; padding: 14px; background: var(--color-gray-50); border-radius: 14px; }
+    .t-price label { display: block; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--color-gray-600); margin-bottom: 2px; }
+    .t-price span { font-size: 1rem; font-weight: 900; color: var(--color-navy); }
+    .t-card .btn {
+      display: block; text-align: center; background: var(--color-navy); color: var(--color-white);
+      border-radius: 14px; padding: 12px 20px; font-weight: 800; font-size: .95rem;
+      margin-top: auto; transition: background .15s;
+    }
+    .t-card .btn:hover { background: var(--color-orange); color: var(--color-white); }
+    .t-card .btn.btn-disabled { background: var(--color-gray-100); color: var(--color-gray-600); cursor: default; pointer-events: none; }
+    /* Badges */
+    .badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 12px; font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+    .badge-available { background: #DCFCE7; color: #15803D; }
+    .badge-reserved { background: #FEF9C3; color: #A16207; }
+    .badge-licensed { background: #FEE2E2; color: #B91C1C; }
+    .badge-internal { background: #F3F4F6; color: #6B7280; }
+    .results-meta { color: var(--color-gray-600); font-size: .92rem; margin-bottom: 16px; }
+    .empty-state { text-align: center; padding: 64px 24px; color: var(--color-gray-600); }
+    .empty-state h3 { color: var(--color-navy); }
+    .section-head { max-width: 680px; margin-bottom: 12px; }
+    @media (max-width: 1024px) { .territory-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 640px) { .territory-grid { grid-template-columns: 1fr; } .filter-bar { flex-direction: column; } }
+  </style>
+
+  <section class="territory-hero">
+    <div class="container">
+      <p class="eyebrow">Territory Licensing</p>
+      <h1>Exclusive Homeowner<br>Territories Available</h1>
+      <p class="lead section-head">Secure exclusive rights to homeowner opportunities in your market before another agency does.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="filter-bar" id="filter-bar">
+        <div class="filter-group search-group">
+          <label for="search-input">Search Territories</label>
+          <input type="text" id="search-input" placeholder="City, state, or territory name…" autocomplete="off" />
+        </div>
+        <div class="filter-group">
+          <label for="filter-state">State</label>
+          <select id="filter-state">
+            <option value="">All States</option>
+            {states.map((s) => <option value={s}>{s}</option>)}
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-type">Territory Type</label>
+          <select id="filter-type">
+            <option value="">All Types</option>
+            {types.map((t) => <option value={t}>{TERRITORY_TYPE_LABELS[t]}</option>)}
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-status">Status</label>
+          <select id="filter-status">
+            <option value="">All Statuses</option>
+            {statuses.map((s) => <option value={s}>{TERRITORY_STATUS_LABELS[s]}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <p class="results-meta" id="results-meta">{territories.length} territories</p>
+
+      <div class="territory-grid" id="territory-grid">
+        {territories.map((t) => (
+          <article
+            class="t-card"
+            data-name={t.territory_name.toLowerCase()}
+            data-state={t.state}
+            data-type={t.territory_type}
+            data-status={t.status}
+            data-pop={t.population}
+          >
+            <div class="t-card-header">
+              <div>
+                <p class="t-state">{t.state_abbr}</p>
+                <h3>{t.territory_name}</h3>
+              </div>
+              <span class={`badge ${statusColors[t.status]}`}>{TERRITORY_STATUS_LABELS[t.status]}</span>
+            </div>
+            <p class="t-type">{TERRITORY_TYPE_LABELS[t.territory_type]}</p>
+            <div class="t-stats">
+              <div class="t-stat">
+                <label>Population</label>
+                <span>{formatNumber(t.population)}</span>
+              </div>
+              <div class="t-stat">
+                <label>Households</label>
+                <span>{formatNumber(t.households)}</span>
+              </div>
+            </div>
+            <div class="t-pricing">
+              <div class="t-price">
+                <label>Annual License</label>
+                <span>{formatCurrency(t.annual_license_fee)}</span>
+              </div>
+              <div class="t-price">
+                <label>Lead Cost</label>
+                <span>{formatCurrency(t.lead_fee)} / lead</span>
+              </div>
+            </div>
+            <a
+              href={`/territories/${t.territory_slug}/`}
+              class={`btn${t.status === 'licensed' || t.status === 'internal' ? ' btn-disabled' : ''}`}
+              data-slug={t.territory_slug}
+              data-territory-name={t.territory_name}
+              data-territory-type={t.territory_type}
+            >
+              {t.status === 'available' ? 'View Territory' : t.status === 'reserved' ? 'View Territory' : 'View Details'}
+            </a>
+          </article>
+        ))}
+      </div>
+
+      <div class="empty-state" id="empty-state" hidden>
+        <h3>No territories match your filters</h3>
+        <p>Try adjusting your search or clearing filters.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { pushDataLayerEvent } from '../../lib/dataLayer';
+
+  pushDataLayerEvent('territory_page_view', { page_path: '/territories/' });
+
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  const filterState = document.getElementById('filter-state') as HTMLSelectElement;
+  const filterType = document.getElementById('filter-type') as HTMLSelectElement;
+  const filterStatus = document.getElementById('filter-status') as HTMLSelectElement;
+  const grid = document.getElementById('territory-grid')!;
+  const meta = document.getElementById('results-meta')!;
+  const emptyState = document.getElementById('empty-state')!;
+
+  function applyFilters() {
+    const q = searchInput.value.toLowerCase().trim();
+    const state = filterState.value;
+    const type = filterType.value;
+    const status = filterStatus.value;
+
+    const cards = grid.querySelectorAll<HTMLElement>('.t-card');
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const matchName = !q || card.dataset.name!.includes(q) || (card.dataset.state || '').toLowerCase().includes(q);
+      const matchState = !state || card.dataset.state === state;
+      const matchType = !type || card.dataset.type === type;
+      const matchStatus = !status || card.dataset.status === status;
+      const show = matchName && matchState && matchType && matchStatus;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    meta.textContent = `${visible} ${visible === 1 ? 'territory' : 'territories'}`;
+    (emptyState as HTMLElement & { hidden: boolean }).hidden = visible > 0;
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+  filterState.addEventListener('change', applyFilters);
+  filterType.addEventListener('change', applyFilters);
+  filterStatus.addEventListener('change', applyFilters);
+
+  // Card click events
+  grid.querySelectorAll<HTMLAnchorElement>('.btn:not(.btn-disabled)').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      pushDataLayerEvent('territory_card_click', {
+        territory_slug: btn.dataset.slug,
+        territory_name: btn.dataset.territoryName,
+        territory_type: btn.dataset.territoryType,
+      });
+    });
+  });
+</script>

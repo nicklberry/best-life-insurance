@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTASection from '../components/CTASection.astro';
+import LeadCaptureGate from '../components/LeadCaptureGate.astro';
+---
+<BaseLayout title="Compare Home Warranty Options | Best Home Warranty Near Me" description="Use a transparent checklist to compare home warranty plans, costs, exclusions, service fees, and coverage limits.">
+<section class="page-hero"><div class="container"><p class="eyebrow">Compare options</p><h1>Compare plans like a person who has met a repair bill.</h1><p class="lead">No fake urgency. No magic promises. Just the details that decide whether a plan helps or shrugs.</p></div></section>
+<section class="section"><div class="container grid grid-2"><LeadCaptureGate /><div class="card"><h2>Compare these details</h2><ul class="list-check"><li>Monthly or annual cost</li><li>Service call fee</li><li>Coverage limits per item</li><li>Common exclusions</li><li>Waiting period</li><li>Contractor choice rules</li></ul></div></div></section><CTASection showLeadGate />
+</BaseLayout>

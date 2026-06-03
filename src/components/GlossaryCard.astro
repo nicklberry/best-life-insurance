@@ -1,0 +1,8 @@
+---
+import { getContentPath } from '../lib/contentPaths';
+const { entry } = Astro.props;
+---
+<article class="card glossary-card" data-search={JSON.stringify([entry.data.term, entry.data.description, ...(entry.data.relatedTerms || [])].join(' ').toLowerCase())}>
+  <h3><a href={getContentPath('glossary', entry)}>{entry.data.term}</a></h3><p>{entry.data.description}</p><p class="muted"><strong>Related:</strong> {entry.data.relatedTerms.join(', ')}</p>
+</article>
+<style>.glossary-card{box-shadow:none}</style>
