@@ -1,20 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { TIER_CONTENT } from '../lib/surveyScoring';
+import { LEVEL_CONTENT } from '../lib/surveyScoring';
 
-const tiers = (['good', 'better', 'best'] as const).map((key) => ({
+const levels = (['basic', 'recommended', 'enhanced'] as const).map((key) => ({
   key,
-  ...TIER_CONTENT[key],
+  ...LEVEL_CONTENT[key],
 }));
 ---
 
 <BaseLayout
-  title="Your Home Protection Profile Results | Best Home Warranty Near Me"
-  description="See your personalized home warranty recommendation based on your home's age, systems, and repair history."
+  title="Your Family Protection Check Results | Best Life Insurance Near Me"
+  description="See your personalized life insurance recommendation based on your household profile and Family Protection Check answers."
   noindex={true}
 >
 
-  <!-- Loading state shown until JS hydrates -->
   <section class="results-loading" id="resultsLoading" aria-live="polite">
     <div class="container">
       <p class="eyebrow">Building your results</p>
@@ -22,67 +21,26 @@ const tiers = (['good', 'better', 'best'] as const).map((key) => ({
     </div>
   </section>
 
-  <!-- Results (hidden until JS populates) -->
   <div id="resultsState" hidden>
 
     <section class="results-hero">
       <div class="container">
-        <p class="eyebrow">Home Protection Profile</p>
-        <h1>Your Home Protection Profile Results</h1>
-        <p class="lead">Based on your answers, here is the coverage level we recommend for your home.</p>
+        <p class="eyebrow">Family Protection Check</p>
+        <h1>Your Family Protection Check Results</h1>
+        <p class="lead">Based on your answers, here is the protection level that may fit your household.</p>
       </div>
     </section>
 
-    <!-- Profile summary -->
-    <section class="section-tight profile-section">
-      <div class="container">
-        <div class="profile-card card">
-          <p class="eyebrow card-eyebrow">Your home snapshot</p>
-          <div class="profile-grid">
-            <div class="profile-stat">
-              <span class="stat-label">Home Age</span>
-              <span class="stat-value" id="displayHomeAge">—</span>
-            </div>
-            <div class="profile-stat">
-              <span class="stat-label">HVAC System Age</span>
-              <span class="stat-value" id="displayHvacAge">—</span>
-            </div>
-            <div class="profile-stat">
-              <span class="stat-label">Water Heater Age</span>
-              <span class="stat-value" id="displayWaterHeaterAge">—</span>
-            </div>
-            <div class="profile-stat">
-              <span class="stat-label">Older Appliances</span>
-              <span class="stat-value" id="displayApplianceCount">—</span>
-            </div>
-            <div class="profile-stat profile-stat-wide">
-              <span class="stat-label">Top Concerns</span>
-              <span class="stat-value" id="displayConcerns">—</span>
-            </div>
-            <div class="profile-stat">
-              <span class="stat-label">Protection Priority</span>
-              <span class="stat-value" id="displayPreference">—</span>
-            </div>
-            <div class="profile-stat">
-              <span class="stat-label">Risk Score</span>
-              <span class="stat-value stat-score" id="displayScore">—</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tier cards -->
     <section class="section tiers-section">
       <div class="container">
         <p class="eyebrow">Your recommendation</p>
-        <h2>Good, Better, or Best?</h2>
-        <p class="lead tiers-intro">Coverage and plan availability vary by provider and ZIP code. These tiers reflect the level of protection that fits your home profile.</p>
+        <h2>Basic, Recommended, or Enhanced?</h2>
+        <p class="lead tiers-intro">Coverage and plan availability vary by provider, age, health, and policy terms. These levels reflect the protection that may fit your household profile.</p>
         <div class="tiers-grid">
-          {tiers.map(({ key, label, tagline, description, features }) => (
+          {levels.map(({ key, label, tagline, description, features }) => (
             <div class="tier-card" id={`tier-${key}`} data-tier={key}>
               <div class="tier-badge-wrap">
-                <span class="rec-badge" id={`rec-badge-${key}`} hidden>Recommended for Your Home</span>
+                <span class="rec-badge" id={`rec-badge-${key}`} hidden>Recommended for Your Household</span>
               </div>
               <p class="tier-name">{label}</p>
               <p class="tier-tagline">{tagline}</p>
@@ -93,341 +51,79 @@ const tiers = (['good', 'better', 'best'] as const).map((key) => ({
             </div>
           ))}
         </div>
-        <p class="tiers-disclaimer muted">Coverage details, pricing, and availability vary by provider, plan, location, and contract terms. These tiers are a starting framework, not a guarantee of what any specific plan will include.</p>
+        <p class="tiers-disclaimer muted">Coverage details, pricing, and availability vary by provider, plan, age, health, and policy terms. These levels are a starting framework, not a guarantee of what any specific policy will include.</p>
       </div>
     </section>
 
-    <!-- CTA -->
     <section class="section results-cta-section">
       <div class="container">
         <div class="results-cta-card">
           <div class="results-cta-copy">
             <p class="eyebrow">Ready for the next step?</p>
-            <h2>Talk to someone about your options.</h2>
-            <p>Your Home Protection Profile helps us match you with the right conversation. Reach out and we can walk through what options may fit your home.</p>
+            <h2>Understand your options further.</h2>
+            <p>Browse our coverage guides to explore the types of life insurance available, or connect your insurance to help us understand your current protection.</p>
           </div>
           <div class="results-cta-actions">
-            <a href="/contact/" class="cta-primary-btn">Request a Consultation</a>
-            <a href="/coverage/" class="cta-secondary-btn">Browse Coverage Guides</a>
+            <a href="/coverage/" class="cta-primary-btn">Browse Coverage Guides</a>
+            <a href="/connect-insurance/" class="cta-secondary-btn">Connect My Insurance</a>
           </div>
         </div>
       </div>
     </section>
 
-  </div><!-- /resultsState -->
+  </div>
 
 </BaseLayout>
 
 <script>
-  import {
-    HOME_AGE_LABELS,
-    SYSTEM_AGE_LABELS,
-    APPLIANCE_COUNT_LABELS,
-    CONCERN_LABELS,
-    PREFERENCE_LABELS,
-  } from '../lib/surveyScoring';
-  import { submitProfile } from '../lib/profileSubmission';
-
-  function setText(id: string, value: string) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
-  }
-
-  const raw = sessionStorage.getItem('profileData');
-
+  const raw = sessionStorage.getItem('fpcData');
   if (!raw) {
-    window.location.href = '/home-protection-profile/';
-    throw new Error('No profile data');
+    document.getElementById('resultsLoading')?.remove();
+    document.getElementById('resultsState')?.removeAttribute('hidden');
+  } else {
+    const data = JSON.parse(raw) as { recommendationLevel?: string };
+    const level = data.recommendationLevel;
+    if (level) {
+      const tierCard = document.getElementById(`tier-${level}`);
+      if (tierCard) {
+        tierCard.classList.add('tier-recommended');
+        const badge = document.getElementById(`rec-badge-${level}`);
+        if (badge) badge.hidden = false;
+      }
+    }
+    document.getElementById('resultsLoading')?.remove();
+    document.getElementById('resultsState')?.removeAttribute('hidden');
   }
-
-  const profile = JSON.parse(raw) as Record<string, unknown>;
-
-  const {
-    homeAge,
-    hvacAge,
-    waterHeaterAge,
-    topConcerns,
-    olderApplianceCount,
-    recentMajorRepair,
-    protectionPreference,
-    riskScore,
-    recommendedTier,
-  } = profile as {
-    homeAge: string;
-    hvacAge: string;
-    waterHeaterAge: string;
-    topConcerns: string[];
-    olderApplianceCount: string;
-    recentMajorRepair: string;
-    protectionPreference: string;
-    riskScore: number;
-    recommendedTier: 'good' | 'better' | 'best';
-  };
-
-  // Populate profile stats
-  setText('displayHomeAge', HOME_AGE_LABELS[homeAge] ?? '—');
-  setText('displayHvacAge', SYSTEM_AGE_LABELS[hvacAge] ?? '—');
-  setText('displayWaterHeaterAge', SYSTEM_AGE_LABELS[waterHeaterAge] ?? '—');
-  setText('displayApplianceCount', APPLIANCE_COUNT_LABELS[olderApplianceCount] ?? '—');
-  setText('displayPreference', PREFERENCE_LABELS[protectionPreference] ?? '—');
-  setText('displayScore', String(riskScore ?? '—'));
-
-  const concernList = Array.isArray(topConcerns)
-    ? topConcerns.map((c) => CONCERN_LABELS[c] ?? c).join(', ')
-    : '—';
-  setText('displayConcerns', concernList || '—');
-
-  // Highlight recommended tier card
-  const tierCard = document.getElementById(`tier-${recommendedTier}`);
-  if (tierCard) {
-    tierCard.classList.add('tier-recommended');
-    const badge = document.getElementById(`rec-badge-${recommendedTier}`);
-    if (badge) badge.hidden = false;
-  }
-
-  // Show results, hide loading
-  document.getElementById('resultsLoading')?.remove();
-  document.getElementById('resultsState')?.removeAttribute('hidden');
-
-  // Fire-and-forget profile submission
-  const leadEmail = sessionStorage.getItem('leadEmail') ?? undefined;
-  const leadFirstName = sessionStorage.getItem('leadFirstName') ?? undefined;
-
-  submitProfile({
-    email: leadEmail,
-    firstName: leadFirstName,
-    homeAge,
-    hvacAge,
-    waterHeaterAge,
-    topConcerns,
-    olderApplianceCount,
-    recentMajorRepair,
-    protectionPreference,
-    riskScore,
-    recommendedTier,
-    completedAt: typeof profile.completedAt === 'string' ? profile.completedAt : undefined,
-    pageUrl: window.location.href,
-    pageTitle: document.title,
-    referrer: document.referrer,
-  }).catch(() => { /* non-blocking */ });
 </script>
 
 <style>
-  /* Loading */
-  .results-loading {
-    padding: 80px 0;
-    text-align: center;
-    background: var(--color-cream);
-  }
-  .loading-msg {
-    font-size: 1.2rem;
-    color: var(--color-gray-700);
-    margin: 0;
-  }
-
-  /* Hero */
-  .results-hero {
-    padding: 64px 0 32px;
-    background: radial-gradient(circle at top right, #FFE4C7, transparent 34%), var(--color-cream);
-  }
-  .results-hero h1 {
-    font-size: clamp(2.2rem, 6vw, 4rem);
-    max-width: 820px;
-  }
-
-  /* Profile card */
-  .profile-section {
-    background: var(--color-cream);
-  }
-  .profile-card {
-    padding: 28px 32px;
-  }
-  .card-eyebrow {
-    margin-bottom: 16px;
-  }
-  .profile-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px 28px;
-  }
-  .profile-stat-wide {
-    grid-column: span 2;
-  }
-  .stat-label {
-    display: block;
-    font-size: .78rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    color: var(--color-gray-600);
-    margin-bottom: 4px;
-  }
-  .stat-value {
-    display: block;
-    font-size: 1.05rem;
-    font-weight: 900;
-    color: var(--color-navy);
-    line-height: 1.3;
-  }
-  .stat-score {
-    color: var(--color-orange);
-    font-size: 1.3rem;
-  }
-
-  /* Tiers */
-  .tiers-section {
-    background: var(--color-soft-cream);
-  }
-  .tiers-intro {
-    margin-bottom: 28px;
-  }
-  .tiers-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-    align-items: start;
-  }
-  .tier-card {
-    background: var(--color-white);
-    border: 2px solid rgba(31, 41, 55, .10);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    box-shadow: var(--shadow-card);
-    transition: border-color .15s;
-    opacity: .72;
-  }
-  .tier-card.tier-recommended {
-    border-color: var(--color-orange);
-    opacity: 1;
-    transform: translateY(-4px);
-    box-shadow: 0 24px 64px rgba(249, 115, 22, .18);
-    position: relative;
-  }
-  .tier-badge-wrap {
-    min-height: 28px;
-    margin-bottom: 6px;
-  }
-  .rec-badge {
-    display: inline-flex;
-    align-items: center;
-    background: var(--color-orange);
-    color: var(--color-white);
-    font-size: .76rem;
-    font-weight: 900;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    padding: 5px 12px;
-    border-radius: 999px;
-  }
-  .tier-name {
-    font-size: 1.1rem;
-    font-weight: 950;
-    color: var(--color-navy);
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    margin: 0 0 4px;
-  }
-  .tier-tagline {
-    font-size: 1.05rem;
-    font-weight: 900;
-    color: var(--color-charcoal);
-    margin: 0 0 10px;
-  }
-  .tier-description {
-    color: var(--color-gray-700);
-    font-size: .95rem;
-    margin: 0 0 16px;
-  }
-  .tier-features {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 8px;
-  }
-  .tier-features li {
-    display: grid;
-    grid-template-columns: 20px 1fr;
-    gap: 6px;
-    font-size: .9rem;
-    color: var(--color-gray-700);
-  }
-  .tier-features li::before {
-    content: '✓';
-    color: var(--color-green);
-    font-weight: 900;
-  }
-  .tiers-disclaimer {
-    margin-top: 20px;
-    font-size: .88rem;
-  }
-
-  /* CTA */
-  .results-cta-section {
-    background: var(--color-cream);
-  }
-  .results-cta-card {
-    background: var(--color-navy);
-    border-radius: 34px;
-    padding: 40px;
-    display: grid;
-    grid-template-columns: 1.2fr .8fr;
-    gap: 28px;
-    align-items: center;
-    box-shadow: 0 30px 70px rgba(16, 32, 51, .2);
-  }
-  .results-cta-card h2 {
-    color: var(--color-white);
-    margin-bottom: 10px;
-  }
-  .results-cta-card .eyebrow {
-    color: rgba(255, 255, 255, .6);
-  }
-  .results-cta-card p {
-    color: #DDE7F1;
-    margin: 0;
-  }
-  .results-cta-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .cta-primary-btn {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    background: var(--color-orange);
-    color: var(--color-white);
-    font-weight: 950;
-    border-radius: 999px;
-    padding: 14px 22px;
-    font-size: 1rem;
-    text-align: center;
-  }
+  .results-loading { padding: 80px 0; text-align: center; background: var(--color-cream); }
+  .loading-msg { font-size: 1.2rem; color: var(--color-gray-700); margin: 0; }
+  .results-hero { padding: 64px 0 32px; background: linear-gradient(135deg, #EBF0FA 0%, #FFFFFF 60%); }
+  .results-hero h1 { font-size: clamp(2.2rem, 6vw, 4rem); max-width: 820px; }
+  .tiers-section { background: var(--color-soft-cream); }
+  .tiers-intro { margin-bottom: 28px; }
+  .tiers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
+  .tier-card { background: var(--color-white); border: 2px solid rgba(31,41,55,.10); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-card); opacity: .72; }
+  .tier-card.tier-recommended { border-color: var(--color-blue); opacity: 1; transform: translateY(-4px); box-shadow: 0 24px 64px rgba(45,91,159,.18); }
+  .tier-badge-wrap { min-height: 28px; margin-bottom: 6px; }
+  .rec-badge { display: inline-flex; align-items: center; background: var(--color-blue); color: var(--color-white); font-size: .76rem; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+  .tier-name { font-size: 1.1rem; font-weight: 950; color: var(--color-navy); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 4px; }
+  .tier-tagline { font-size: 1.05rem; font-weight: 900; color: var(--color-charcoal); margin: 0 0 10px; }
+  .tier-description { color: var(--color-gray-700); font-size: .95rem; margin: 0 0 16px; }
+  .tier-features { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .tier-features li { display: grid; grid-template-columns: 20px 1fr; gap: 6px; font-size: .9rem; color: var(--color-gray-700); }
+  .tier-features li::before { content: '✓'; color: var(--color-green); font-weight: 900; }
+  .tiers-disclaimer { margin-top: 20px; font-size: .88rem; }
+  .results-cta-section { background: var(--color-cream); }
+  .results-cta-card { background: var(--color-navy); border-radius: 34px; padding: 40px; display: grid; grid-template-columns: 1.2fr .8fr; gap: 28px; align-items: center; box-shadow: 0 30px 70px rgba(16,32,51,.2); }
+  .results-cta-card h2 { color: var(--color-white); margin-bottom: 10px; }
+  .results-cta-card .eyebrow { color: rgba(255,255,255,.6); }
+  .results-cta-card p { color: #DDE7F1; margin: 0; }
+  .results-cta-actions { display: flex; flex-direction: column; gap: 12px; }
+  .cta-primary-btn { display: inline-flex; justify-content: center; align-items: center; background: var(--color-blue); color: var(--color-white); font-weight: 950; border-radius: 999px; padding: 14px 22px; font-size: 1rem; text-align: center; }
   .cta-primary-btn:hover { filter: brightness(.94); color: var(--color-white); }
-  .cta-secondary-btn {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255, 255, 255, .12);
-    color: var(--color-white);
-    font-weight: 800;
-    border-radius: 999px;
-    padding: 13px 22px;
-    font-size: .95rem;
-    text-align: center;
-  }
-  .cta-secondary-btn:hover { background: rgba(255, 255, 255, .18); color: var(--color-white); }
-
-  @media (max-width: 820px) {
-    .tiers-grid { grid-template-columns: 1fr; }
-    .tier-card.tier-recommended { transform: none; }
-    .profile-grid { grid-template-columns: repeat(2, 1fr); }
-    .profile-stat-wide { grid-column: span 2; }
-    .results-cta-card { grid-template-columns: 1fr; padding: 28px; }
-  }
-  @media (max-width: 520px) {
-    .profile-grid { grid-template-columns: 1fr; }
-    .profile-stat-wide { grid-column: span 1; }
-  }
+  .cta-secondary-btn { display: inline-flex; justify-content: center; align-items: center; background: rgba(255,255,255,.12); color: var(--color-white); font-weight: 800; border-radius: 999px; padding: 13px 22px; font-size: .95rem; text-align: center; }
+  .cta-secondary-btn:hover { background: rgba(255,255,255,.18); color: var(--color-white); }
+  @media (max-width: 820px) { .tiers-grid { grid-template-columns: 1fr; } .tier-card.tier-recommended { transform: none; } .results-cta-card { grid-template-columns: 1fr; padding: 28px; } }
 </style>

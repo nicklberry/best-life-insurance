@@ -5,7 +5,7 @@ import SearchBox from '../../components/SearchBox.astro';
 import GlossaryCard from '../../components/GlossaryCard.astro';
 const entries = (await getCollection('glossary')).sort((a,b) => a.data.term.localeCompare(b.data.term));
 ---
-<BaseLayout title="Home Warranty Glossary | Best Home Warranty Near Me" description="Definitions for service call fees, coverage limits, exclusions, waiting periods, home warranties, and homeowners insurance.">
-<section class="page-hero"><div class="container"><p class="eyebrow">Glossary</p><h1>Home warranty terms translated into human.</h1><p class="lead">Because “coverage limit” sounds harmless until it starts paying less than the bill.</p><SearchBox label="Search glossary terms" placeholder="Search by term, definition, or related term..." target=".glossary-card" /></div></section>
+<BaseLayout title="Life Insurance Glossary | Best Life Insurance Near Me" description="Plain-English definitions for beneficiary, death benefit, cash value, premium, underwriting, contestability period, and other life insurance terms.">
+<section class="page-hero"><div class="container"><p class="eyebrow">Glossary</p><h1>Life insurance terms explained clearly.</h1><p class="lead">Understanding what you're reading is the first step to making a confident decision for your family.</p><SearchBox label="Search glossary terms" placeholder="Search by term or definition..." target=".glossary-card" /></div></section>
 <section class="section"><div class="container grid grid-3">{entries.map((entry) => <GlossaryCard entry={entry} />)}</div></section>
 </BaseLayout>

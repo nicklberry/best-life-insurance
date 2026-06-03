@@ -1,171 +1,164 @@
 export type SurveyAnswers = {
-  homeAge?: string;
-  hvacAge?: string;
-  waterHeaterAge?: string;
-  topConcerns?: string[];
-  olderApplianceCount?: string;
-  recentMajorRepair?: string;
-  protectionPreference?: string;
+  ageRange?: string;
+  maritalStatus?: string;
+  numberOfChildren?: string;
+  homeownerStatus?: string;
+  annualIncome?: string;
+  existingLifeInsurance?: string;
 };
 
-export type RecommendedTier = 'good' | 'better' | 'best';
+export type RecommendationLevel = 'basic' | 'recommended' | 'enhanced';
 
 export type SurveyResult = SurveyAnswers & {
-  riskScore: number;
-  recommendedTier: RecommendedTier;
+  protectionGapScore: number;
+  recommendationLevel: RecommendationLevel;
   completedAt: string;
 };
 
-// ─── Score tables ────────────────────────────────────────────────────────────
+// ─── Score tables ─────────────────────────────────────────────────────────────
 
-const HOME_AGE_SCORES: Record<string, number> = {
-  under5: 5,
-  '5to10': 15,
-  '11to20': 25,
-  '21to40': 40,
-  over40: 55,
-  notSure: 20,
+const AGE_SCORES: Record<string, number> = {
+  '18-24': 10,
+  '25-34': 20,
+  '35-44': 30,
+  '45-54': 35,
+  '55-64': 25,
+  '65+': 15,
 };
 
-const SYSTEM_AGE_SCORES: Record<string, number> = {
-  under5: 5,
-  '5to10': 15,
-  '11to15': 30,
-  over15: 45,
-  notSure: 20,
+const MARITAL_SCORES: Record<string, number> = {
+  Married: 20,
+  Single: 5,
+  Divorced: 10,
+  Widowed: 8,
 };
 
-const WATER_HEATER_SCORES: Record<string, number> = {
-  under5: 5,
-  '5to10': 15,
-  '11to15': 25,
-  over15: 35,
-  notSure: 15,
+const CHILDREN_SCORES: Record<string, number> = {
+  '0': 0,
+  '1': 15,
+  '2': 22,
+  '3': 28,
+  '4+': 32,
 };
 
-const APPLIANCE_SCORES: Record<string, number> = {
-  none: 0,
-  '1to2': 10,
-  '3to4': 20,
-  over5: 30,
-  notSure: 10,
+const HOMEOWNER_SCORES: Record<string, number> = {
+  Yes: 15,
+  No: 5,
+  'Not Sure': 8,
 };
 
-const PREFERENCE_SCORES: Record<string, number> = {
-  lowest: -5,
-  balanced: 5,
-  maximum: 15,
+const INCOME_SCORES: Record<string, number> = {
+  'Under $30,000': 10,
+  '$30,000–$59,999': 15,
+  '$60,000–$99,999': 20,
+  '$100,000–$149,999': 22,
+  '$150,000+': 25,
 };
 
-// Max possible raw score: 55 + 45 + 35 + 14 (7 concerns × 2) + 30 + 15 + 15 = 209
-const MAX_RAW = 209;
+const EXISTING_COVERAGE_SCORES: Record<string, number> = {
+  Yes: -20,
+  No: 20,
+  'Not Sure': 10,
+};
 
-export function calculateRiskScore(answers: SurveyAnswers): number {
+// Max possible raw score: 35 + 20 + 32 + 15 + 25 + 20 = 147
+const MAX_RAW = 147;
+
+export function calculateProtectionGapScore(answers: SurveyAnswers): number {
   let raw = 0;
-  raw += HOME_AGE_SCORES[answers.homeAge ?? 'notSure'] ?? 20;
-  raw += SYSTEM_AGE_SCORES[answers.hvacAge ?? 'notSure'] ?? 20;
-  raw += WATER_HEATER_SCORES[answers.waterHeaterAge ?? 'notSure'] ?? 15;
-  raw += Math.min((answers.topConcerns?.length ?? 0) * 2, 14);
-  raw += APPLIANCE_SCORES[answers.olderApplianceCount ?? 'notSure'] ?? 10;
-  if (answers.recentMajorRepair === 'yes') raw += 15;
-  raw += PREFERENCE_SCORES[answers.protectionPreference ?? 'balanced'] ?? 5;
+  raw += AGE_SCORES[answers.ageRange ?? '35-44'] ?? 20;
+  raw += MARITAL_SCORES[answers.maritalStatus ?? 'Single'] ?? 10;
+  raw += CHILDREN_SCORES[answers.numberOfChildren ?? '0'] ?? 0;
+  raw += HOMEOWNER_SCORES[answers.homeownerStatus ?? 'Not Sure'] ?? 8;
+  raw += INCOME_SCORES[answers.annualIncome ?? '$60,000–$99,999'] ?? 15;
+  raw += EXISTING_COVERAGE_SCORES[answers.existingLifeInsurance ?? 'Not Sure'] ?? 10;
   return Math.max(1, Math.min(100, Math.round((Math.max(0, raw) / MAX_RAW) * 99) + 1));
 }
 
-export function getRecommendedTier(riskScore: number): RecommendedTier {
-  if (riskScore <= 35) return 'good';
-  if (riskScore <= 65) return 'better';
-  return 'best';
+export function getRecommendationLevel(score: number): RecommendationLevel {
+  if (score <= 35) return 'basic';
+  if (score <= 65) return 'recommended';
+  return 'enhanced';
 }
 
-// ─── Display labels ──────────────────────────────────────────────────────────
+// ─── Display labels ───────────────────────────────────────────────────────────
 
-export const HOME_AGE_LABELS: Record<string, string> = {
-  under5: 'Less than 5 years',
-  '5to10': '5–10 years',
-  '11to20': '11–20 years',
-  '21to40': '21–40 years',
-  over40: 'More than 40 years',
-  notSure: 'Not sure',
+export const AGE_RANGE_LABELS: Record<string, string> = {
+  '18-24': '18–24',
+  '25-34': '25–34',
+  '35-44': '35–44',
+  '45-54': '45–54',
+  '55-64': '55–64',
+  '65+': '65 or older',
 };
 
-export const SYSTEM_AGE_LABELS: Record<string, string> = {
-  under5: 'Less than 5 years',
-  '5to10': '5–10 years',
-  '11to15': '11–15 years',
-  over15: '15+ years',
-  notSure: 'Not sure',
+export const MARITAL_STATUS_LABELS: Record<string, string> = {
+  Married: 'Married',
+  Single: 'Single',
+  Divorced: 'Divorced',
+  Widowed: 'Widowed',
 };
 
-export const APPLIANCE_COUNT_LABELS: Record<string, string> = {
-  none: 'None',
-  '1to2': '1–2',
-  '3to4': '3–4',
-  over5: '5 or more',
-  notSure: 'Not sure',
+export const CHILDREN_LABELS: Record<string, string> = {
+  '0': 'No children',
+  '1': '1 child',
+  '2': '2 children',
+  '3': '3 children',
+  '4+': '4 or more children',
 };
 
-export const CONCERN_LABELS: Record<string, string> = {
-  hvac: 'HVAC breakdown',
-  plumbing: 'Plumbing repairs',
-  electrical: 'Electrical issues',
-  waterHeater: 'Water heater failure',
-  kitchen: 'Kitchen appliances',
-  laundry: 'Laundry appliances',
-  unexpected: 'Unexpected repair bills',
-  notSure: 'Not sure',
+export const INCOME_LABELS: Record<string, string> = {
+  'Under $30,000': 'Under $30,000',
+  '$30,000–$59,999': '$30,000–$59,999',
+  '$60,000–$99,999': '$60,000–$99,999',
+  '$100,000–$149,999': '$100,000–$149,999',
+  '$150,000+': '$150,000 or more',
 };
 
-export const PREFERENCE_LABELS: Record<string, string> = {
-  lowest: 'Lowest monthly cost',
-  balanced: 'Balanced protection and price',
-  maximum: 'Maximum protection',
-};
+// ─── Recommendation level content ────────────────────────────────────────────
 
-// ─── Tier content ────────────────────────────────────────────────────────────
-
-export type TierContent = {
+export type LevelContent = {
   label: string;
   tagline: string;
   description: string;
   features: string[];
 };
 
-export const TIER_CONTENT: Record<RecommendedTier, TierContent> = {
-  good: {
-    label: 'Good',
-    tagline: 'Budget-focused protection',
+export const LEVEL_CONTENT: Record<RecommendationLevel, LevelContent> = {
+  basic: {
+    label: 'Basic',
+    tagline: 'Foundational coverage',
     description:
-      'Best for newer homes and homeowners focused on lower monthly costs.',
+      'A starting point for individuals with fewer dependents or existing coverage already in place.',
     features: [
-      'Core system and appliance coverage',
-      'Lower annual cost relative to other tiers',
-      'Suitable for newer construction with younger systems',
-      'Good starting point for first-time warranty buyers',
+      'Term life coverage for income replacement',
+      'Lower premium cost relative to other options',
+      'Good starting point for younger or single individuals',
+      'Helps ensure final expenses are covered',
     ],
   },
-  better: {
-    label: 'Better',
-    tagline: 'Balanced protection and price',
+  recommended: {
+    label: 'Recommended',
+    tagline: 'Balanced family protection',
     description:
-      'Best for homeowners who want stronger protection without paying for every possible add-on.',
+      'Designed for households with dependents, income to protect, and financial obligations to consider.',
     features: [
-      'Broader coverage across systems and appliances',
-      'Balanced cost relative to protection level',
-      'Handles common mid-life system and appliance issues',
-      'Suitable for mixed-age systems or recent repair history',
+      'Broader coverage for income and debt obligations',
+      'Sized to support dependents through key milestones',
+      'May include living benefits depending on policy type',
+      'Appropriate for growing families and homeowners',
     ],
   },
-  best: {
-    label: 'Best',
-    tagline: 'Maximum protection',
+  enhanced: {
+    label: 'Enhanced',
+    tagline: 'Comprehensive household protection',
     description:
-      'Best for older homes, aging systems, and homeowners who want the broadest protection available.',
+      'For households with significant financial responsibilities, multiple dependents, or long-term wealth planning needs.',
     features: [
-      'Most comprehensive system and appliance coverage',
-      'Higher coverage limits on major repairs',
-      'Built for homes with older systems or significant repair history',
-      'Reduces exposure to large unexpected repair bills',
+      'Higher benefit amounts for full income replacement',
+      'Covers mortgage, debt, education, and income gaps',
+      'May include permanent coverage components',
+      'Built for households with complex protection needs',
     ],
   },
 };

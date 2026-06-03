@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://besthomewarrantynearme.com',
+  site: 'https://bestlifeinsurancenearme.com',
   output: 'static'
 });

@@ -1,25 +1,39 @@
 ---
 import Button from './Button.astro';
 import Disclaimer from './Disclaimer.astro';
-import LeadCaptureGate from './LeadCaptureGate.astro';
-const { title = 'Your house breaks. We help you not go broke.', subtitle = 'Compare home warranty options before your AC, water heater, or dishwasher decides to become your most expensive family member.' } = Astro.props;
+const { title = 'Protect the People Who Depend on You', subtitle = 'Compare life insurance options and understand how much protection your family may need.' } = Astro.props;
 ---
 <section class="hero">
   <div class="container hero-grid">
     <div>
-      <p class="eyebrow">Consumer guide for expensive house drama</p>
+      <p class="eyebrow">Family protection resource</p>
       <h1>{title}</h1>
       <p class="lead">{subtitle}</p>
-      <div class="hero-actions"><Button href="/compare/">Check Coverage Options</Button><Button href="/coverage/" variant="secondary">See What Home Warranties Cover</Button></div>
+      <div class="hero-actions">
+        <Button href="/family-protection-check/">Start My Family Protection Check</Button>
+        <Button href="/coverage/" variant="secondary">Explore Coverage Options</Button>
+      </div>
       <Disclaimer />
     </div>
-    <div class="hero-card" aria-label="Home repair cost examples">
-      <div class="receipt"><span>AC making that noise</span><strong>$1,200?</strong></div>
-      <div class="receipt"><span>Water heater chaos</span><strong>$900?</strong></div>
-      <div class="receipt"><span>Dishwasher rebellion</span><strong>$450?</strong></div>
-      <p>Home warranties can help with covered repairs. They can also disappoint you if you skip the contract. Let’s not do that.</p>
-      <LeadCaptureGate compact />
+    <div class="hero-card" aria-label="Why life insurance matters">
+      <div class="stat-row"><span class="stat-label">Families with no life insurance</span><strong class="stat-value">1 in 3</strong></div>
+      <div class="stat-row"><span class="stat-label">Average income replacement goal</span><strong class="stat-value">10–12×</strong></div>
+      <div class="stat-row"><span class="stat-label">People who say they need more coverage</span><strong class="stat-value">41%</strong></div>
+      <p class="hero-note">Understanding your options is the first step. The Family Protection Check takes about 2 minutes.</p>
+      <a class="hero-cta" href="/family-protection-check/">Start My Family Protection Check</a>
     </div>
   </div>
 </section>
-<style>.hero{padding:74px 0;background:radial-gradient(circle at 80% 10%,#FFE0BE,transparent 34%),linear-gradient(180deg,var(--color-cream),var(--color-soft-cream))}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:34px;align-items:center}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 0}.hero-card{background:var(--color-navy);color:white;border-radius:34px;padding:28px;box-shadow:0 30px 70px rgba(16,32,51,.25);transform:rotate(1deg)}.receipt{display:flex;justify-content:space-between;gap:16px;background:white;color:var(--color-navy);border-radius:18px;padding:16px;margin-bottom:14px}.receipt strong{font-size:1.5rem;color:var(--color-orange)}.hero-card p{color:#DDE7F1;margin-top:18px}@media(max-width:880px){.hero-grid{grid-template-columns:1fr}.hero-card{transform:none}}</style>
+<style>
+.hero{padding:74px 0;background:linear-gradient(135deg,#EBF0FA 0%,#FFFFFF 55%)}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 0}
+.hero-card{background:var(--color-navy);color:white;border-radius:34px;padding:30px;box-shadow:0 30px 70px rgba(16,32,51,.22)}
+.stat-row{display:flex;justify-content:space-between;align-items:center;gap:16px;background:rgba(255,255,255,.08);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.stat-label{color:#C8D8EE;font-size:.93rem;font-weight:700;line-height:1.3}
+.stat-value{font-size:1.6rem;font-weight:950;color:white;white-space:nowrap}
+.hero-note{color:#C8D8EE;margin:16px 0 18px;font-size:.93rem;line-height:1.5}
+.hero-cta{display:inline-flex;align-items:center;justify-content:center;background:var(--color-blue);color:white;font-weight:950;border-radius:999px;padding:14px 22px;width:100%;text-align:center}
+.hero-cta:hover{filter:brightness(.94);color:white}
+@media(max-width:880px){.hero-grid{grid-template-columns:1fr}}
+</style>

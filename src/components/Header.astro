@@ -1,18 +1,26 @@
 ---
 const links = [
-  ['Home warranty', '/home-warranty/'], ['Compare', '/compare/'], ['Coverage', '/coverage/'], ['Blog', '/blog/'], ['Glossary', '/glossary/']
+  ['Coverage', '/coverage/'], ['Compare', '/compare/'], ['Blog', '/blog/'], ['Glossary', '/glossary/'], ['Territories', '/territories/']
 ];
 ---
 <header class="site-header">
   <div class="container nav-wrap">
-    <a class="brand" href="/" aria-label="Best Home Warranty Near Me home"><span class="brand-mark">🏠</span><span>Best Home Warranty<br/>Near Me</span></a>
+    <a class="brand" href="/" aria-label="Best Life Insurance Near Me home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="white"/>
+          <path d="M12 4C7.58 4 4 7.58 4 12s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z" fill="white" opacity="0.6"/>
+        </svg>
+      </span>
+      <span>Best Life Insurance<br/>Near Me</span>
+    </a>
     <nav aria-label="Primary navigation">
       {links.map(([label, href]) => <a href={href}>{label}</a>)}
     </nav>
-    <a class="nav-cta" href="/compare/">Check options</a>
+    <a class="nav-cta" href="/family-protection-check/">Family Protection Check</a>
   </div>
 </header>
 <style>
-.site-header{position:sticky;top:0;z-index:20;background:rgba(255,249,240,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(31,41,55,.08)}
-.nav-wrap{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 0}.brand{display:flex;align-items:center;gap:10px;font-weight:950;color:var(--color-navy);line-height:1}.brand-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:var(--color-orange)}nav{display:flex;gap:18px;color:var(--color-gray-700);font-weight:800;font-size:.95rem}.nav-cta{background:var(--color-navy);color:white;border-radius:999px;padding:10px 14px;font-weight:900}.nav-cta:hover{color:white;background:var(--color-orange)}@media(max-width:860px){nav{display:none}.brand{font-size:.92rem}.nav-cta{font-size:.9rem}}
+.site-header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(31,41,55,.08)}
+.nav-wrap{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 0}.brand{display:flex;align-items:center;gap:10px;font-weight:950;color:var(--color-navy);line-height:1}.brand-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:var(--color-navy);flex-shrink:0}nav{display:flex;gap:18px;color:var(--color-gray-700);font-weight:800;font-size:.95rem}.nav-cta{background:var(--color-blue);color:white;border-radius:999px;padding:10px 18px;font-weight:900;white-space:nowrap}.nav-cta:hover{color:white;background:var(--color-navy)}@media(max-width:900px){nav{display:none}.brand{font-size:.92rem}.nav-cta{font-size:.9rem;padding:10px 14px}}
 </style>

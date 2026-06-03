@@ -6,7 +6,7 @@ import CTASection from '../../components/CTASection.astro';
 import { getContentPath } from '../../lib/contentPaths';
 const coverage = await getCollection('coverage');
 ---
-<BaseLayout title="Home Warranty Coverage Guides | Best Home Warranty Near Me" description="Plain-English guides to home warranty coverage for HVAC, plumbing, electrical, appliances, and water heaters.">
-<section class="page-hero"><div class="container"><p class="eyebrow">Coverage hub</p><h1>What home warranties may cover.</h1><p class="lead">Coverage varies by plan and provider. Translation: read the contract before your house starts freelancing as a money shredder.</p></div></section>
-<section class="section"><div class="container grid grid-3">{coverage.map((item) => <CoverageCard title={item.data.title} description={item.data.description} href={getContentPath('coverage', item)} items={item.data.coveredItems} />)}</div></section><CTASection showLeadGate />
+<BaseLayout title="Life Insurance Coverage Guides | Best Life Insurance Near Me" description="Plain-English guides to life insurance coverage types — term life, whole life, universal life, final expense, mortgage protection, and more.">
+<section class="page-hero"><div class="container"><p class="eyebrow">Coverage guides</p><h1>Life insurance options explained.</h1><p class="lead">Understanding the differences between policy types helps you choose coverage that actually fits your family's needs. Coverage, availability, and pricing vary by provider and plan.</p></div></section>
+<section class="section"><div class="container grid grid-3">{coverage.map((item) => <CoverageCard title={item.data.title} description={item.data.description} href={getContentPath('coverage', item)} items={item.data.coveredItems} />)}</div></section><CTASection />
 </BaseLayout>

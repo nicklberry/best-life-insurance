@@ -5,7 +5,7 @@ import SearchBox from '../../components/SearchBox.astro';
 import PostCard from '../../components/PostCard.astro';
 const posts = (await getCollection('blog')).sort((a,b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
-<BaseLayout title="Home Warranty Blog | Best Home Warranty Near Me" description="Helpful, funny, plain-English articles about home warranties, coverage, claims, costs, and insurance differences.">
-<section class="page-hero"><div class="container"><p class="eyebrow">Blog</p><h1>Home warranty advice without the sales fog.</h1><p class="lead">Useful guides for homeowners whose appliances are one weird sound away from forming a union.</p><SearchBox label="Search blog articles" placeholder="Search by title, category, or tag..." target=".post-card" /></div></section>
+<BaseLayout title="Life Insurance Blog | Best Life Insurance Near Me" description="Plain-English guides on life insurance — coverage types, how much you may need, when to buy, and how to protect the people who depend on you.">
+<section class="page-hero"><div class="container"><p class="eyebrow">Blog</p><h1>Life insurance guidance, without the pressure.</h1><p class="lead">Educational articles to help individuals and families understand their options and make informed decisions.</p><SearchBox label="Search articles" placeholder="Search by title, category, or topic..." target=".post-card" /></div></section>
 <section class="section"><div class="container grid grid-3">{posts.map((post) => <PostCard post={post} />)}</div></section>
 </BaseLayout>
