@@ -1,4 +1,4 @@
-export type TerritoryType = 'community' | 'regional' | 'metro';
+export type TerritoryType = 'community' | 'regional' | 'metro' | 'state' | 'national';
 export type TerritoryStatus = 'available' | 'reserved' | 'licensed' | 'internal';
 
 export interface Territory {
@@ -359,6 +359,8 @@ export const TERRITORY_TYPE_LABELS: Record<TerritoryType, string> = {
   community: 'Community Territory',
   regional: 'Regional Territory',
   metro: 'Metro Territory',
+  state: 'State Territory',
+  national: 'National Territory',
 };
 
 export const TERRITORY_STATUS_LABELS: Record<TerritoryStatus, string> = {

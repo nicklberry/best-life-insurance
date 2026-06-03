@@ -5,33 +5,59 @@ import Hero from '../components/Hero.astro';
 import TrustStrip from '../components/TrustStrip.astro';
 import HowItWorks from '../components/HowItWorks.astro';
 import CoverageCard from '../components/CoverageCard.astro';
-import ProsCons from '../components/ProsCons.astro';
 import CTASection from '../components/CTASection.astro';
 import Disclaimer from '../components/Disclaimer.astro';
 import { getContentPath } from '../lib/contentPaths';
 const coverage = await getCollection('coverage');
 ---
-<BaseLayout title="Best Home Warranty Near Me | Compare Coverage Without the Nonsense" description="Compare home warranty options with plain-English guides, honest disclaimers, and zero fake countdown timers.">
+<BaseLayout title="Best Life Insurance Near Me | Protect the People Who Depend on You" description="Compare life insurance options and understand how much protection your family may need. Educational guides, plain-English explanations, no fake urgency.">
   <Hero />
   <TrustStrip />
   <section class="section">
     <div class="container grid grid-2">
-      <div><p class="eyebrow">The problem</p><h2>Houses are basically expensive toddlers with plumbing.</h2><p class="lead">They leak, overheat, hum weirdly, and demand money at the worst possible moment.</p></div>
-      <div class="card"><h3>Who this is for</h3><ul class="list-check"><li>Homeowners comparing coverage before a breakdown.</li><li>Buyers who want plain-English contract help.</li><li>People who know “probably fine” is not a maintenance plan.</li></ul><h3>Who this is not for</h3><ul class="list-x"><li>Anyone expecting every repair to be covered.</li><li>Anyone who hates reading limits before buying.</li></ul></div>
+      <div>
+        <p class="eyebrow">Who this is for</p>
+        <h2>Life insurance should be understood, not just purchased.</h2>
+        <p class="lead">Whether you're exploring for the first time or reviewing existing coverage, plain-English information helps you make better decisions for your family.</p>
+      </div>
+      <div class="card">
+        <h3>A good fit if you're</h3>
+        <ul class="list-check">
+          <li>A parent thinking about your family's financial security.</li>
+          <li>A homeowner with mortgage obligations.</li>
+          <li>Someone who wants to understand options before talking to an agent.</li>
+          <li>A person reviewing whether existing coverage is still adequate.</li>
+        </ul>
+        <h3>Less useful if you're</h3>
+        <ul class="list-x">
+          <li>Looking for a quick, no-research purchase.</li>
+          <li>Expecting guaranteed rates without a medical review.</li>
+        </ul>
+      </div>
     </div>
   </section>
   <HowItWorks />
-  <section class="section">
-    <div class="container"><p class="eyebrow">Coverage guides</p><h2>What home warranties may cover</h2><div class="grid grid-3">{coverage.map((item) => <CoverageCard title={item.data.title} description={item.data.description} href={getContentPath('coverage', item)} items={item.data.coveredItems} />)}</div></div>
+  <section class="section" style="background:var(--color-soft-cream)">
+    <div class="container"><p class="eyebrow">Coverage guides</p><h2>Life insurance options explained</h2><div class="grid grid-3">{coverage.map((item) => <CoverageCard title={item.data.title} description={item.data.description} href={getContentPath('coverage', item)} items={item.data.coveredItems} />)}</div></div>
   </section>
-  <ProsCons />
   <section class="section">
     <div class="container grid grid-2">
-      <div><p class="eyebrow">Insurance savings bridge</p><h2>Home warranties and insurance are cousins, not twins.</h2><p class="lead">A warranty may help with covered wear-and-tear breakdowns. Homeowners insurance may help with covered events like fire, theft, wind, and liability.</p><Disclaimer insurance /></div>
-      <div class="card"><h3>Future flow, not built yet</h3><ol><li>Check home warranty options.</li><li>Enter ZIP code.</li><li>Review warranty options.</li><li>Optionally connect insurance information through Canopy Connect.</li><li>Qualified leads may route to local licensed agencies.</li></ol></div>
+      <div>
+        <p class="eyebrow">Understanding what you have</p>
+        <h2>Your current protection may not be the full picture.</h2>
+        <p class="lead">Employer-provided group life insurance, existing policies, and other financial products may already provide some protection. Understanding what you have helps identify what may be missing.</p>
+        <Disclaimer insurance />
+      </div>
+      <div class="card">
+        <h3>Common coverage gaps</h3>
+        <ul class="list-check">
+          <li>Employer coverage that ends when you change jobs.</li>
+          <li>Coverage amounts that no longer reflect your income or obligations.</li>
+          <li>Policies that haven't been reviewed since a major life event.</li>
+          <li>No coverage for a non-working spouse or partner.</li>
+        </ul>
+      </div>
     </div>
   </section>
-  <section class="section local"><div class="container"><p class="eyebrow">Near me, minus the weirdness</p><h2>Home warranty options near you depend on your ZIP code.</h2><p class="lead">Providers, prices, contractors, and coverage terms can vary by location. We help homeowners compare the basics before a local repair bill starts doing cardio.</p></div></section>
-  <CTASection showLeadGate />
+  <CTASection />
 </BaseLayout>
-<style>.local{background:white}</style>

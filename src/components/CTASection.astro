@@ -1,14 +1,12 @@
 ---
 import Button from './Button.astro';
 import Disclaimer from './Disclaimer.astro';
-import LeadCaptureGate from './LeadCaptureGate.astro';
-const { title = 'Before your water heater chooses violence, compare your options.', text = 'Start with the coverage basics. Then decide if a plan deserves a spot in your budget.', showLeadGate = false } = Astro.props;
+const { title = 'Ready to understand your family\'s protection?', text = 'Start with the Family Protection Check. It takes about 2 minutes and helps you think through how much coverage your household may need.', showLeadGate = false } = Astro.props;
 ---
 <section class="section cta-section">
   <div class="container cta-card">
-    <div><p class="eyebrow">Next smart move</p><h2>{title}</h2><p class="lead">{text}</p></div>
-    <div class="cta-actions"><Button href="/compare/">Check Coverage Options</Button><Button href="/coverage/" variant="secondary">Browse coverage</Button><Disclaimer /></div>
-    {showLeadGate && <LeadCaptureGate compact />}
+    <div><p class="eyebrow">Next step</p><h2>{title}</h2><p class="lead">{text}</p></div>
+    <div class="cta-actions"><Button href="/family-protection-check/">Start My Family Protection Check</Button><Button href="/coverage/" variant="secondary">Explore Coverage</Button><Disclaimer /></div>
   </div>
 </section>
-<style>.cta-section{background:var(--color-cream)}.cta-card{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;background:var(--color-navy);color:white;border-radius:34px;padding:34px;box-shadow:0 30px 70px rgba(16,32,51,.2)}.cta-card h2{color:white}.cta-card .lead{color:#DDE7F1}.cta-card :global(.btn){margin:5px}@media(max-width:820px){.cta-card{grid-template-columns:1fr;padding:24px}}</style>
+<style>.cta-section{background:var(--color-soft-cream)}.cta-card{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;background:var(--color-navy);color:white;border-radius:34px;padding:34px;box-shadow:0 30px 70px rgba(16,32,51,.2)}.cta-card h2{color:white}.cta-card .lead{color:#DDE7F1}.cta-card :global(.btn){margin:5px}@media(max-width:820px){.cta-card{grid-template-columns:1fr;padding:24px}}</style>

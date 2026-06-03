@@ -1,105 +1,114 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// TODO: Replace placeholder with embedded Canopy Connect form.
-const benefits = [
-  'Better recommendations based on your actual policy',
-  'Faster matching with fewer follow-up questions',
-  'A clearer picture of how your home is protected'
-];
-
-const trustBullets = [
-  'No fake star ratings',
-  'No pressure sales tactics',
-  'Plain-English explanations',
-  'Coverage varies. We say that a lot.'
+const trustPoints = [
+  {
+    icon: '🔒',
+    title: 'Secure Connection',
+    desc: 'Information is transmitted through encrypted connections.'
+  },
+  {
+    icon: '✋',
+    title: 'You Stay In Control',
+    desc: 'You choose what information to connect and can stop the process at any time.'
+  },
+  {
+    icon: '🚫',
+    title: 'No Password Storage',
+    desc: 'We do not store your insurance account passwords.'
+  },
+  {
+    icon: '📋',
+    title: 'Used To Improve Recommendations',
+    desc: 'Connected information helps us understand your current protection and reduce unnecessary guesswork.'
+  }
 ];
 
 const faqs = [
   {
-    question: 'Why do you need my homeowners insurance information?',
-    answer: 'Because homeowners insurance and home warranties cover different things. Seeing your current policy helps us understand what protection you already have so we can make better recommendations.'
+    question: 'Why are you asking for my insurance information?',
+    answer: 'Many people already have protections in place through life insurance policies, employer benefits, homeowners insurance, auto insurance, or other financial products. By understanding what protections may already exist, we can provide more relevant guidance and help identify potential coverage gaps.'
   },
   {
-    question: 'Will connecting my policy change my insurance?',
-    answer: 'No. Connecting your information does not change your current policy. It simply helps us review details so we can better understand your current home protection setup.'
+    question: 'Will connecting my information change my existing policies?',
+    answer: 'No. Connecting your information does not change, cancel, or modify any of your existing insurance policies. It simply helps us review what protection you already have so we can make better recommendations.'
   },
   {
     question: 'Does this guarantee better coverage or savings?',
-    answer: 'No. It helps us make better recommendations, but it does not guarantee coverage, savings, approval, or availability.'
+    answer: 'No. It helps us make more relevant recommendations, but it does not guarantee coverage, savings, approval, or availability. Available information depends on what you choose to connect and what your carrier provides.'
   },
   {
-    question: 'What happens after I connect my policy?',
-    answer: 'We review the information, compare it against available options, and help guide you toward the next best step for your home.'
+    question: 'What happens after I connect my information?',
+    answer: 'We review the information and use it to provide more relevant guidance about life insurance options that may align with your current protection situation.'
   }
 ];
 ---
-<BaseLayout title="Connect Homeowners Insurance | Best Home Warranty Near Me" description="Connect your current homeowners insurance so Best Home Warranty Near Me can better understand your existing protection and recommend home warranty options faster." keywords="connect homeowners insurance, Canopy Connect, home warranty recommendations, homeowners insurance review, home protection gaps">
+<BaseLayout title="Connect Your Insurance | Best Life Insurance Near Me" description="Help us understand your current protection. Connecting your insurance information through Canopy Connect helps us provide more relevant life insurance guidance." keywords="connect insurance, Canopy Connect, life insurance review, current coverage, household protection">
   <section class="connect-hero">
     <div class="container hero-wrap">
-      <p class="eyebrow">One more smart step</p>
-      <h1>One more step: let's see what your home already has covered.</h1>
-      <p class="lead">Connect your current homeowners insurance so we can recommend the right home warranty options faster and with less guessing.</p>
-      <p class="hero-support">Home warranties and homeowners insurance protect different parts of your house. Seeing your current policy helps us understand what you already have, what may be missing, and which warranty options may make the most sense.</p>
+      <p class="eyebrow">Optional — but helpful</p>
+      <h1>Help Us Understand Your Current Protection</h1>
+      <p class="lead">Connecting your insurance information can help us understand the protections your household already has in place.</p>
+      <p class="hero-support">Many people have existing coverage through employer benefits, existing life insurance policies, homeowners insurance, or other financial products. Seeing what's already in place helps us avoid unnecessary recommendations and focus on what may actually matter for your situation.</p>
     </div>
   </section>
 
-  <section class="benefits-strip" aria-label="Benefits of connecting your homeowners insurance">
-    <div class="container compact-benefits">
-      {benefits.map((benefit) => (
-        <div class="benefit-item">
-          <span aria-hidden="true">✓</span>
-          <p>{benefit}</p>
-        </div>
-      ))}
+  <!-- Security & Trust Section -->
+  <section class="section trust-section">
+    <div class="container">
+      <div class="trust-header">
+        <p class="eyebrow">Your security</p>
+        <h2>Your Information Stays Secure</h2>
+        <p class="lead">We understand that insurance information is personal. That's why we use Canopy Connect, a secure platform that helps consumers safely connect insurance information without emailing documents, uploading screenshots, or sharing account passwords with us.</p>
+        <p class="trust-sub">The information you choose to connect is used to help us better understand your current protection and provide more relevant recommendations.</p>
+      </div>
+      <div class="trust-grid">
+        {trustPoints.map((tp) => (
+          <div class="trust-card">
+            <span class="trust-icon" aria-hidden="true">{tp.icon}</span>
+            <h3 class="trust-card-title">{tp.title}</h3>
+            <p class="trust-card-desc">{tp.desc}</p>
+          </div>
+        ))}
+      </div>
+      <p class="trust-disclaimer">Available information depends on what you choose to connect and what your insurance carrier makes available through connected systems.</p>
     </div>
   </section>
 
+  <!-- Canopy Connect Embed -->
   <section class="canopy-section">
     <div class="container canopy-card">
       <div class="canopy-copy">
         <p class="eyebrow">Connect securely</p>
-        <h2>Connect your current homeowners insurance</h2>
+        <h2>Help Us Understand Your Current Protection</h2>
         <p class="lead">This usually only takes a few minutes.</p>
-        <p>The more we understand about your current coverage, the easier it is to point you toward home warranty options that actually fit your home.</p>
+        <p>The more we understand about your current coverage, the easier it is to provide relevant guidance about life insurance options.</p>
       </div>
-      <div class="canopy-connect-placeholder">
+      <div class="canopy-connect-wrap">
         <script src="https://cdn.usecanopy.com/v2/embed.js" async></script>
-<div data-canopy-connect-public-alias="best-home-warranty-near-me" style="width: 400px; height: 600px;" class="canopy-connect-mount"></div>
+        <div data-canopy-connect-public-alias="best-life-insurance-near-me" style="width: 400px; height: 600px;" class="canopy-connect-mount"></div>
       </div>
     </div>
   </section>
 
+  <!-- Why We Ask Section -->
   <section class="section why-section">
     <div class="container narrow">
       <p class="eyebrow">Why we ask</p>
-      <h2>Why are we asking for your insurance information?</h2>
-      <p class="lead">Because your home is unique.</p>
-      <p>A home warranty can help with certain repairs to appliances and systems. Homeowners insurance is usually designed for things like storms, fire, theft, and certain types of property damage.</p>
-      <p>When we can review your current policy information, we can better understand what protection you already have and what home warranty options may be worth comparing.</p>
+      <h2>Why Are We Asking For This?</h2>
+      <p class="lead">Our goal is not to collect unnecessary information.</p>
+      <p>Many people already have protections in place through life insurance policies, employer benefits, homeowners insurance, auto insurance, or other financial products.</p>
+      <p>By understanding what protections may already exist, we can provide more relevant guidance and help identify potential coverage gaps.</p>
+      <p>Our goal is to help you make a more informed decision.</p>
     </div>
   </section>
 
-  <section class="section trust-section">
-    <div class="container trust-card">
-      <div>
-        <p class="eyebrow">Privacy and trust</p>
-        <h2>How we use this information</h2>
-        <p>We use your connected insurance information to better understand your current coverage and help recommend home warranty options that may fit your situation.</p>
-        <p>We may also share relevant information with participating home warranty providers and licensed insurance agencies when necessary to provide requested services.</p>
-        <p class="disclosure"><strong>Important:</strong> Coverage varies by provider, plan, location, and contract terms. Connecting your insurance information does not guarantee coverage, savings, approval, or availability.</p>
-      </div>
-      <ul class="trust-list">
-        {trustBullets.map((item) => <li>{item}</li>)}
-      </ul>
-    </div>
-  </section>
-
+  <!-- FAQ -->
   <section class="section faq-section">
     <div class="container narrow">
       <div class="section-heading">
-        <p class="eyebrow">Questions before you connect</p>
-        <h2>Quick answers, no fine-print fog.</h2>
+        <p class="eyebrow">Questions</p>
+        <h2>Common questions before you connect.</h2>
       </div>
       <div class="faq-list">
         {faqs.map((faq) => (
@@ -117,11 +126,13 @@ const faqs = [
       <div class="next-step-card">
         <div class="next-step-copy">
           <p class="eyebrow">Next step</p>
-          <h2>Build your Home Protection Profile</h2>
-          <p>Answer a few quick questions about your home&rsquo;s age, systems, and appliances. We use your answers to recommend the right level of home warranty coverage for your specific situation.</p>
-          <p class="next-step-sub">Connecting your insurance policy above is optional. Either way, the Home Protection Profile helps us make better recommendations.</p>
+          <h2>Continue Exploring Your Options</h2>
+          <p>Browse our coverage guides to understand the types of life insurance available. Or take the Family Protection Check if you haven&rsquo;t already.</p>
         </div>
-        <a href="/home-protection-profile/" class="next-step-btn">Continue to Home Protection Profile &rarr;</a>
+        <div class="next-step-actions">
+          <a href="/coverage/" class="next-step-btn">Browse Coverage Guides &rarr;</a>
+          <a href="/family-protection-check/" class="next-step-btn-ghost">Take the Family Protection Check</a>
+        </div>
       </div>
     </div>
   </section>
@@ -136,7 +147,6 @@ const faqs = [
 
   const canopyBase = {
     lead_type: params.get('leadType') || 'canopy_connect',
-    eligible_state: params.get('eligibleState') || '',
     page_path: attr.current_page_path,
     referrer: attr.current_referrer,
     ...attr,
@@ -150,69 +160,64 @@ const faqs = [
       const target = entry.target as HTMLElement;
       if (target.dataset.canopyObserved) return;
       target.dataset.canopyObserved = '1';
-      if (target.classList.contains('canopy-connect-placeholder')) {
+      if (target.classList.contains('canopy-connect-wrap')) {
         pushDataLayerEvent('canopy_embed_view', canopyBase);
-      } else if (target.classList.contains('next-step-card')) {
-        pushDataLayerEvent('canopy_cta_view', canopyBase);
       }
     });
   }, { threshold: 0.3 });
 
-  ['.canopy-connect-placeholder', '.next-step-card'].forEach((sel) => {
-    const el = document.querySelector(sel);
-    if (el) observer.observe(el);
-  });
-
-  document.querySelector<HTMLAnchorElement>('.next-step-btn')?.addEventListener('click', () => {
-    pushDataLayerEvent('canopy_connect_click', canopyBase);
-  });
+  const el = document.querySelector('.canopy-connect-wrap');
+  if (el) observer.observe(el);
 </script>
 
 <style>
-  .connect-hero { padding: 56px 0 28px; background: radial-gradient(circle at top right, #FFE4C7, transparent 34%), var(--color-cream); }
+  .connect-hero { padding: 56px 0 28px; background: linear-gradient(135deg, #EBF0FA 0%, #FFFFFF 60%); }
   .hero-wrap { max-width: 980px; }
   .connect-hero h1 { max-width: 900px; font-size: clamp(2.45rem, 7vw, 5rem); }
   .connect-hero .lead { max-width: 820px; }
   .hero-support { color: var(--color-gray-700); font-size: 1.03rem; max-width: 820px; margin-bottom: 0; }
-  .benefits-strip { padding: 18px 0 28px; background: var(--color-cream); }
-  .compact-benefits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-  .benefit-item { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; background: var(--color-white); border: 1px solid rgba(31, 41, 55, .10); border-radius: 20px; padding: 14px 16px; box-shadow: 0 10px 28px rgba(16, 32, 51, .07); }
-  .benefit-item span { color: var(--color-green); font-weight: 950; }
-  .benefit-item p { margin: 0; color: var(--color-navy); font-weight: 900; line-height: 1.35; }
-  .canopy-section { padding: 28px 0 66px; background: linear-gradient(180deg, var(--color-cream), var(--color-soft-cream)); }
-  .canopy-card, .trust-card, details { background: var(--color-white); border: 1px solid rgba(31, 41, 55, .10); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
-  .canopy-card { display: grid; gap: 20px; padding: 32px; }
-  .canopy-copy { max-width: 820px; }
+
+  .trust-section { background: var(--color-soft-cream); }
+  .trust-header { max-width: 820px; margin-bottom: 36px; }
+  .trust-sub { color: var(--color-gray-700); margin-bottom: 0; }
+  .trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .trust-card { background: var(--color-white); border: 1px solid rgba(31,41,55,.10); border-radius: var(--radius-md); padding: 24px; box-shadow: 0 8px 24px rgba(16,32,51,.07); }
+  .trust-icon { display: block; font-size: 1.8rem; margin-bottom: 10px; }
+  .trust-card-title { font-size: 1rem; font-weight: 900; color: var(--color-navy); margin: 0 0 6px; }
+  .trust-card-desc { font-size: .9rem; color: var(--color-gray-700); margin: 0; line-height: 1.5; }
+  .trust-disclaimer { margin-top: 20px; font-size: .88rem; color: var(--color-gray-600); font-style: italic; }
+
+  .canopy-section { padding: 56px 0; background: var(--color-white); }
+  .canopy-card { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .canopy-copy { max-width: 480px; }
   .canopy-copy h2 { font-size: clamp(2rem, 5vw, 3.4rem); }
-  .canopy-connect-placeholder { min-height: 300px; border: 2px dashed rgba(249, 115, 22, .48); border-radius: var(--radius-lg); background: var(--color-soft-cream); display: grid; place-items: center; text-align: center; padding: 28px; }
-  .canopy-connect-placeholder p { margin: 0; color: var(--color-navy); font-weight: 950; font-size: clamp(1.1rem, 3vw, 1.45rem); }
+  .canopy-connect-wrap { display: flex; justify-content: center; align-items: flex-start; }
+
   .narrow { max-width: 850px; }
-  .why-section { background: var(--color-white); }
-  .trust-section { background: var(--color-navy); }
-  .trust-card { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr); gap: 28px; padding: 34px; background: rgba(255, 255, 255, .96); }
-  .trust-list { display: grid; gap: 12px; padding: 0; margin: 0; list-style: none; align-content: center; }
-  .trust-list li { padding: 13px 15px; border-radius: 999px; background: var(--color-soft-cream); color: var(--color-navy); font-weight: 900; }
+  .why-section { background: var(--color-soft-cream); }
   .section-heading { max-width: 780px; margin-bottom: 24px; }
+  .faq-section { background: var(--color-white); }
   .faq-list { display: grid; gap: 12px; }
-  details { padding: 0; box-shadow: none; overflow: hidden; }
+  details { background: var(--color-white); border: 1px solid rgba(31,41,55,.10); border-radius: var(--radius-md); overflow: hidden; }
   summary { cursor: pointer; padding: 18px 20px; color: var(--color-navy); font-weight: 950; list-style-position: inside; }
   details p { margin: 0; padding: 0 20px 20px; color: var(--color-gray-700); }
-  @media (max-width: 820px) {
+
+  .next-step-section { background: var(--color-soft-cream); }
+  .next-step-card { background: var(--color-white); border: 1px solid rgba(31,41,55,.10); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 34px; display: grid; gap: 24px; }
+  .next-step-copy h2 { font-size: clamp(1.6rem, 4vw, 2.6rem); margin-bottom: 12px; }
+  .next-step-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .next-step-btn { display: inline-flex; align-items: center; background: var(--color-blue); color: var(--color-white); font-weight: 950; border-radius: 999px; padding: 15px 26px; font-size: 1rem; }
+  .next-step-btn:hover { filter: brightness(.94); color: var(--color-white); }
+  .next-step-btn-ghost { display: inline-flex; align-items: center; color: var(--color-navy); font-weight: 900; border: 2px solid rgba(16,32,51,.15); border-radius: 999px; padding: 14px 24px; font-size: 1rem; }
+  .next-step-btn-ghost:hover { border-color: var(--color-navy); }
+
+  @media (max-width: 900px) {
+    .trust-grid { grid-template-columns: repeat(2, 1fr); }
+    .canopy-card { grid-template-columns: 1fr; }
     .connect-hero { padding: 42px 0 20px; }
-    .compact-benefits, .trust-card { grid-template-columns: 1fr; }
-    .benefits-strip { padding-bottom: 20px; }
-    .canopy-section { padding-top: 20px; }
-    .canopy-card, .trust-card { padding: 24px; }
   }
   @media (max-width: 620px) {
-    .connect-hero { padding-top: 34px; }
-    .connect-hero h1 { font-size: clamp(2.25rem, 12vw, 3.25rem); }
-    .canopy-connect-placeholder { min-height: 240px; }
+    .trust-grid { grid-template-columns: 1fr; }
+    .canopy-connect-wrap :global([data-canopy-connect-public-alias]) { width: 100% !important; }
   }
-  .next-step-section { background: var(--color-cream); }
-  .next-step-card { background: var(--color-white); border: 1px solid rgba(31, 41, 55, .10); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 34px; display: grid; gap: 24px; }
-  .next-step-copy h2 { font-size: clamp(1.6rem, 4vw, 2.6rem); margin-bottom: 12px; }
-  .next-step-sub { color: var(--color-gray-600); font-size: .93rem; margin-bottom: 0; }
-  .next-step-btn { display: inline-flex; align-items: center; background: var(--color-orange); color: var(--color-white); font-weight: 950; border-radius: 999px; padding: 15px 26px; font-size: 1rem; align-self: start; }
-  .next-step-btn:hover { filter: brightness(.94); color: var(--color-white); }
 </style>

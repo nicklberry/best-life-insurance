@@ -6,9 +6,9 @@ export type LeadPayload = {
   email: string;
   phone: string;
 
-  address: string;
-  city: string;
-  state: string;
+  address?: string;
+  city?: string;
+  state?: string;
   zip: string;
 
   tcpaConsent: boolean;
@@ -16,27 +16,25 @@ export type LeadPayload = {
   tcpaConsentVersion: string;
   tcpaConsentTimestamp: string;
 
-  eligibilityStatus: 'eligible' | 'ineligible';
-  eligibleState: 'IA' | 'IL' | '';
-  leadType: 'coverage_lead' | 'expansion_waitlist' | 'home_protection_gap_check';
+  submission_type: 'life_insurance_lead';
+  leadType: 'family_protection_check' | 'life_quote_request' | 'expansion_waitlist';
 
-  // Survey / profile fields (optional for gap-check and profile flows)
-  homeAge?: string;
-  hvacAge?: string;
-  waterHeaterAge?: string;
-  topConcerns?: string[];
-  olderApplianceCount?: string;
-  recentMajorRepair?: string;
-  protectionPreference?: string;
-  riskScore?: number;
-  recommendedTier?: string;
+  // Family Protection Check fields
+  ageRange?: string;
+  maritalStatus?: string;
+  numberOfChildren?: string;
+  homeownerStatus?: string;
+  annualIncome?: string;
+  existingLifeInsurance?: string;
+  protectionGapScore?: number;
+  recommendationLevel?: string;
 
   // Anti-spam fields
   companyWebsite?: string;
   timeToSubmitMs?: number;
   spamCheckStatus?: 'pass' | 'suspect';
 
-  website: 'besthomewarrantynearme.com';
+  website: 'bestlifeinsurancenearme.com';
   pageUrl: string;
   pagePath: string;
   pageTitle: string;

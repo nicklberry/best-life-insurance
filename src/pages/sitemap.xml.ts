@@ -1,11 +1,9 @@
 import { getCollection } from 'astro:content';
 import { getContentPath } from '../lib/contentPaths';
-import { locations } from '../data/locations/index';
 
-const SITE_URL = 'https://besthomewarrantynearme.com';
+const SITE_URL = 'https://bestlifeinsurancenearme.com';
 const STATIC_ROUTES = [
   '/',
-  '/home-warranty/',
   '/compare/',
   '/coverage/',
   '/blog/',
@@ -13,11 +11,10 @@ const STATIC_ROUTES = [
   '/about/',
   '/contact/',
   '/connect-insurance/',
-  '/home-protection-profile/',
-  '/home-protection-gap-check/',
+  '/family-protection-check/',
+  '/territories/',
   '/privacy/',
   '/terms/'
-  // /recommendations/ is intentionally excluded — it is personalized and noindex
 ];
 
 function xmlEscape(value: string) {
@@ -51,17 +48,8 @@ export async function GET() {
     getCollection('glossary')
   ]);
 
-  const locationStateUrls = locations.map((s) =>
-    urlEntry(`/home-warranty/${s.slug}/`, undefined, '0.8')
-  );
-  const locationCityUrls = locations.flatMap((s) =>
-    s.cities.map((c) => urlEntry(`/home-warranty/${s.slug}/${c.slug}/`, undefined, '0.7'))
-  );
-
   const urls = [
     ...STATIC_ROUTES.map((route) => urlEntry(route, undefined, route === '/' ? '1.0' : '0.8')),
-    ...locationStateUrls,
-    ...locationCityUrls,
     ...coverage.map((entry) => urlEntry(getContentPath('coverage', entry), undefined, '0.9')),
     ...blog.map((entry) => urlEntry(getContentPath('blog', entry), formatDate(entry.data.updatedDate ?? entry.data.pubDate), '0.7')),
     ...glossary.map((entry) => urlEntry(getContentPath('glossary', entry), undefined, '0.6'))

@@ -3,8 +3,11 @@ interface Props { title: string; description: string; href: string; items?: stri
 const { title, description, href, items = [] } = Astro.props;
 ---
 <article class="coverage-card">
-  <div class="icon">⚙️</div><h3><a href={href}>{title}</a></h3><p>{description}</p>
+  <div class="icon" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" fill="#2D5B9F"/></svg>
+  </div>
+  <h3><a href={href}>{title}</a></h3><p>{description}</p>
   {items.length > 0 && <ul>{items.slice(0,3).map((item) => <li>{item}</li>)}</ul>}
   <a class="read-more" href={href}>Read the coverage guide →</a>
 </article>
-<style>.coverage-card{background:white;border:1px solid rgba(31,41,55,.1);border-radius:26px;padding:24px;box-shadow:var(--shadow-card)}.icon{width:48px;height:48px;display:grid;place-items:center;background:var(--color-soft-cream);border-radius:16px;margin-bottom:12px}.coverage-card p{color:var(--color-gray-700)}ul{padding-left:18px;color:var(--color-gray-600)}.read-more{font-weight:900;color:var(--color-orange)}</style>
+<style>.coverage-card{background:white;border:1px solid rgba(31,41,55,.1);border-radius:26px;padding:24px;box-shadow:var(--shadow-card)}.icon{width:48px;height:48px;display:grid;place-items:center;background:var(--color-light-blue);border-radius:16px;margin-bottom:12px}.coverage-card p{color:var(--color-gray-700)}ul{padding-left:18px;color:var(--color-gray-600)}.read-more{font-weight:900;color:var(--color-blue)}</style>

@@ -15,8 +15,8 @@ const {
   title,
   description,
   canonical,
-  keywords = 'home warranty, best home warranty, home warranty near me, home warranty coverage, compare home warranty plans',
-  image = '/best-home-warranty-og.png',
+  keywords = 'life insurance, best life insurance, life insurance near me, term life insurance, whole life insurance, family protection, life insurance quotes',
+  image = '/best-life-insurance-og.png',
   noindex = false
 } = Astro.props;
 const canonicalUrl = canonical ? new URL(canonical, Astro.site) : new URL(Astro.url.pathname, Astro.site);
@@ -32,7 +32,7 @@ const imageUrl = new URL(image, Astro.site);
     <meta name="keywords" content={keywords} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalUrl.href} />
-    <meta property="og:site_name" content="Best Home Warranty Near Me" />
+    <meta property="og:site_name" content="Best Life Insurance Near Me" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -40,12 +40,12 @@ const imageUrl = new URL(image, Astro.site);
     <meta property="og:image" content={imageUrl.href} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Best Home Warranty Near Me home warranty comparison guides" />
+    <meta property="og:image:alt" content="Best Life Insurance Near Me life insurance guides" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl.href} />
-    <meta name="theme-color" content="#FFF9F0" />
+    <meta name="theme-color" content="#FFFFFF" />
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -70,18 +70,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   import { pushDataLayerEvent } from '../lib/dataLayer';
   import { captureAttribution } from '../lib/attribution';
 
-  const STATE_SLUG_MAP: Record<string, string> = { iowa: 'IA', illinois: 'IL' };
-
   function getContentType(path: string): string {
     if (path === '/') return 'home';
-    if (path.startsWith('/home-warranty/')) {
+    if (path.startsWith('/life-insurance/')) {
       const parts = path.split('/').filter(Boolean);
       return parts.length >= 3 ? 'territory_city' : 'territory_state';
     }
     if (path.startsWith('/coverage/')) return 'coverage_guide';
     if (path.startsWith('/blog/')) return 'blog';
     if (path.startsWith('/glossary/')) return 'glossary';
-    const toolPaths = ['/home-protection-gap-check/', '/home-protection-profile/', '/connect-insurance/', '/recommendations/'];
+    const toolPaths = ['/family-protection-check/', '/connect-insurance/', '/recommendations/'];
     if (toolPaths.includes(path)) return 'tool';
     if (path === '/compare/') return 'compare';
     if (path === '/contact/') return 'contact';
@@ -91,8 +89,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   function getCluster(path: string): string {
     const clusterMap: Record<string, string> = {
-      '/home-protection-gap-check/': 'gap_check',
-      '/home-protection-profile/': 'home_protection_profile',
+      '/family-protection-check/': 'family_protection_check',
       '/connect-insurance/': 'canopy_connect',
       '/recommendations/': 'recommendations',
     };
@@ -102,27 +99,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return '';
   }
 
-  function getTerritoryData(path: string): { state: string; city: string } {
-    const parts = path.split('/').filter(Boolean);
-    if (parts[0] === 'home-warranty' && parts.length >= 2) {
-      const state = STATE_SLUG_MAP[parts[1]] || parts[1];
-      const city = parts[2] ? parts[2].replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : '';
-      return { state, city };
-    }
-    return { state: '', city: '' };
-  }
-
   const path = window.location.pathname;
   const attr = captureAttribution();
-  const { state, city } = getTerritoryData(path);
 
   pushDataLayerEvent('page_view_enhanced', {
     page_url: attr.current_page_url,
     page_path: path,
     page_title: document.title,
     content_type: getContentType(path),
-    state,
-    city,
     cluster: getCluster(path),
     ...attr,
   });

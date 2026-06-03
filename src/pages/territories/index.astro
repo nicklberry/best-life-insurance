@@ -11,19 +11,19 @@ const statusColors: Record<TerritoryStatus, string> = {
 };
 
 const states = [...new Set(territories.map((t) => t.state))].sort();
-const types: TerritoryType[] = ['community', 'regional', 'metro'];
+const types: TerritoryType[] = ['community', 'regional', 'metro', 'state', 'national'];
 const statuses: TerritoryStatus[] = ['available', 'reserved', 'licensed', 'internal'];
 ---
 
 <BaseLayout
-  title="Exclusive Homeowner Acquisition Territories | Best Home Warranty Near Me"
-  description="Secure exclusive homeowner acquisition rights in your market. Browse available territories across Iowa and Illinois before another agency does."
-  keywords="exclusive homeowner territory, insurance territory license, homeowner acquisition territory, insurance agency territory"
+  title="Exclusive Life Insurance Lead Territories | Best Life Insurance Near Me"
+  description="Secure exclusive life insurance lead acquisition rights in your market. Browse available territories for independent agents, financial advisors, and insurance agencies."
+  keywords="exclusive life insurance territory, insurance territory license, life insurance leads, agent territory, life insurance agency"
 >
   <style>
     .territory-hero {
       padding: 72px 0 48px;
-      background: radial-gradient(circle at top right, #FFE4C7, transparent 38%), var(--color-cream);
+      background: linear-gradient(135deg, #EBF0FA 0%, #FFFFFF 60%);
     }
     .filter-bar {
       background: var(--color-white);
@@ -49,8 +49,8 @@ const statuses: TerritoryStatus[] = ['available', 'reserved', 'licensed', 'inter
       min-width: 160px;
     }
     .filter-bar select:focus, .filter-bar input:focus {
-      outline: 3px solid rgba(249,115,22,.25);
-      border-color: var(--color-orange);
+      outline: 3px solid rgba(45,91,159,.25);
+      border-color: var(--color-blue);
     }
     .filter-group { flex: 1 1 160px; }
     .search-group { flex: 2 1 260px; }
@@ -70,7 +70,7 @@ const statuses: TerritoryStatus[] = ['available', 'reserved', 'licensed', 'inter
     .t-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 14px; }
     .t-card h3 { font-size: 1.2rem; margin: 0; }
     .t-state { font-size: .82rem; font-weight: 700; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
-    .t-type { font-size: .78rem; font-weight: 700; color: var(--color-orange); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px; }
+    .t-type { font-size: .78rem; font-weight: 700; color: var(--color-blue); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px; }
     .t-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
     .t-stat label { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--color-gray-600); margin-bottom: 2px; }
     .t-stat span { font-size: 1.05rem; font-weight: 800; color: var(--color-navy); }
@@ -82,7 +82,7 @@ const statuses: TerritoryStatus[] = ['available', 'reserved', 'licensed', 'inter
       border-radius: 14px; padding: 12px 20px; font-weight: 800; font-size: .95rem;
       margin-top: auto; transition: background .15s;
     }
-    .t-card .btn:hover { background: var(--color-orange); color: var(--color-white); }
+    .t-card .btn:hover { background: var(--color-blue); color: var(--color-white); }
     .t-card .btn.btn-disabled { background: var(--color-gray-100); color: var(--color-gray-600); cursor: default; pointer-events: none; }
     /* Badges */
     .badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 12px; font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
@@ -101,8 +101,8 @@ const statuses: TerritoryStatus[] = ['available', 'reserved', 'licensed', 'inter
   <section class="territory-hero">
     <div class="container">
       <p class="eyebrow">Territory Licensing</p>
-      <h1>Exclusive Homeowner<br>Territories Available</h1>
-      <p class="lead section-head">Secure exclusive rights to homeowner opportunities in your market before another agency does.</p>
+      <h1>Exclusive Life Insurance<br>Lead Territories</h1>
+      <p class="lead section-head">Secure exclusive rights to life insurance lead opportunities in your market. Available to independent agents, financial advisors, and insurance agencies.</p>
     </div>
   </section>
 
